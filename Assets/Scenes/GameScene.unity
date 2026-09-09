@@ -994,6 +994,7 @@ GameObject:
   - component: {fileID: 375762444}
   - component: {fileID: 375762443}
   - component: {fileID: 375762442}
+  - component: {fileID: 375762446}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1119,6 +1120,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &375762446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375762441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d229d05fce19f614ea0afff44b32f744, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
+  oneLineStrength: 0.1
+  oneLineDuration: 0.16
+  twoLineStrength: 0.13
+  twoLineDuration: 0.24
+  threePlusStrength: 0.15
+  threePlusDuration: 0.34
+  frequency: 38
 --- !u!1 &415668604
 GameObject:
   m_ObjectHideFlags: 0
@@ -3242,6 +3262,7 @@ GameObject:
   - component: {fileID: 1687254880}
   - component: {fileID: 1687254879}
   - component: {fileID: 1687254882}
+  - component: {fileID: 1687254883}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -3319,7 +3340,6 @@ MonoBehaviour:
   - {fileID: 1238178148685168, guid: d524a615441c182459d0ecb24725aed4, type: 3}
   - {fileID: 1712035561414186, guid: af75014e9002a9b4ea5a97606b36a12f, type: 3}
   - {fileID: 1589823186830044, guid: d96426773adc538459fee6fbe08ab241, type: 3}
-  - {fileID: 1778757016101204, guid: 29a37a611cd9fb54f8a180360459fa45, type: 3}
   - {fileID: 1469326190372194, guid: 99626c0cd549ed447b3382332980bd0b, type: 3}
   - {fileID: 1041771550514078, guid: fbf34992f2a688e4f8071ab41ef417c8, type: 3}
   - {fileID: 1323344920795098, guid: 4c14c1cf7e884ec41be5ae5a169e892c, type: 3}
@@ -3329,8 +3349,8 @@ MonoBehaviour:
   - {fileID: 1475640524086086, guid: 2fdff14e409707346bab066aab4eb6bc, type: 3}
   gameTransform: {fileID: 61851310}
   boardTransform: {fileID: 1362182595}
-  boardColor: {r: 0, g: 0, b: 0, a: 0.5882353}
-  highlightColor: {r: 0, g: 0, b: 0, a: 0.5882353}
+  boardColor: {r: 0, g: 0, b: 0, a: 0.627451}
+  highlightColor: {r: 0, g: 0, b: 0, a: 0.627451}
   boardTileScale: {x: 0, y: 0, z: 0}
   scaledBlockTileScale: {x: 0, y: 0, z: 0}
   blocks:
@@ -3350,6 +3370,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DestroyManager
   destroyedLines: 0
+  placementSettleTime: 0.08
+  chargeTime: 0.09
+  rippleStep: 0.018
+  shrinkTime: 0.16
+  pulseScale: 1.12
+  oneLineSparks: 3
+  twoLineSparks: 4
+  threePlusSparks: 6
+--- !u!114 &1687254883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687254877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 558a31df4c2479a46ad3afc4492f3cbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LineClearEffects
+  maxVisuals: 144
+  beamColor: {r: 0.35, g: 0.9, b: 1, a: 0.65}
+  showComboText: 1
 --- !u!1 &1740457746
 GameObject:
   m_ObjectHideFlags: 0

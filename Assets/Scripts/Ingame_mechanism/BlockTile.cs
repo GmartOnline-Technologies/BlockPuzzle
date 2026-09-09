@@ -5,11 +5,34 @@ public class BlockTile : MonoBehaviour
     [HideInInspector]
     public Color defaultColor;
 
+    private BlockFadeAnimation fadeAnimation;
+
+    private BlockFadeAnimation GetFadeAnimation()
+    {
+        if (fadeAnimation == null)
+        {
+            fadeAnimation = GetComponent<BlockFadeAnimation>();
+            if (fadeAnimation == null)
+                fadeAnimation = gameObject.AddComponent<BlockFadeAnimation>();
+        }
+        return fadeAnimation;
+    }
+
     public void Fade(float d, Color c)
-{
-    // Instantly apply the color since we don't have the animation script yet
-    GetComponent<SpriteRenderer>().color = c;
-}
+    {
+        GetFadeAnimation().SetAnimation(d, c);
+    }
+
+    public void ShowPreview(float duration, Sprite sprite)
+    {
+        GetFadeAnimation().ShowPreview(duration, sprite);
+    }
+
+    public void ClearPreview()
+    {
+        if (fadeAnimation != null)
+            fadeAnimation.ClearPreview();
+    }
 
     public void Fall(float d, BlockFallAnimation.Direction dir)
     {

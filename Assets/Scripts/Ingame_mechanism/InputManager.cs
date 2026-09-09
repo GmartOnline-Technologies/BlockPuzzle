@@ -21,6 +21,7 @@ public class InputManager : MonoBehaviour
     {
         if (draggedBlock)
         {
+            RemoveAllHighlights();
             MoveDraggedBlock();
             ResetDraggedBlock();
         }
@@ -33,6 +34,13 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
+        // Board occupancy stays reserved until the short clear animation ends.
+        if (DestroyManager.ins != null && DestroyManager.ins.IsClearing)
+        {
+            if (draggedBlock != null) ResetBlock();
+            return;
+        }
+
         if (screenOrientation != Screen.orientation)
             ResetBlock();
 
@@ -56,6 +64,7 @@ public class InputManager : MonoBehaviour
 
                 if (c.tag == "Block" && hitBlock != null && hitBlock.movable && !hitBlock.IsMoving())
                 {
+                    RemoveAllHighlights();
                     draggedBlock = hitBlock;
                     draggedBlock.Scale(true, 0.2f);
                     Color cl = draggedBlock.defaultColor; cl.a = 0.66f;
@@ -113,6 +122,8 @@ public class InputManager : MonoBehaviour
         }
         else if (inputEnded && draggedBlock)
         {
+            // Stop preview animations before changing opacity or clearing lines.
+            RemoveAllHighlights();
             Vector3 size = draggedBlock.size;
             size = new Vector3(size.x - 1, size.y - 1, 0);
 
@@ -182,9 +193,8 @@ public class InputManager : MonoBehaviour
 
     private void RemoveAllHighlights()
     {
-        foreach (BlockTile b in BoardManager.ins.boardBlocks)
-            if (b != null)
-                b.Fade(0.2f, b.defaultColor);
+        BoardManager.ins.ClearBlockHighlights();
+        lastPos = new Vector2Int(-1, -1);
 
         if (highlightedTiles != null && highlightedColors != null)
         {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BoardManager : MonoBehaviour
 {
@@ -136,6 +137,7 @@ public class BoardManager : MonoBehaviour
 
     public void CheckBoard(bool onAwake = false)
     {
+        if (DestroyManager.ins.IsClearing) return;
         DestroyManager.ins.SetDestroy();
 
         for (int x = 0; x < BOARD_SIZE; x++)
@@ -144,14 +146,53 @@ public class BoardManager : MonoBehaviour
             CheckHLine(y);
 
         if (DestroyManager.ins.destroyedLines > 0)
-            StartCoroutine(DestroyManager.ins.DestroyAllBlocks());
+        {
+            // DestroyManager synchronizes the flare, tile burst and camera shake.
+            StartCoroutine(DestroyManager.ins.DestroyAllBlocks(!onAwake));
+        }
         else
             CheckSpace(onAwake);
     }
 
+    private readonly HashSet<BlockTile> previewedBlocks = new HashSet<BlockTile>();
+    private Sprite previewSprite;
+
+    public void ClearBlockHighlights()
+    {
+        foreach (BlockTile tile in previewedBlocks)
+            if (tile != null)
+                tile.ClearPreview();
+
+        previewedBlocks.Clear();
+        previewSprite = null;
+    }
+
+    private void PreviewBlock(BlockTile tile)
+    {
+        // A row/column intersection should animate only once.
+        if (tile != null && previewedBlocks.Add(tile))
+            tile.ShowPreview(0.2f, previewSprite);
+    }
+
     public void HighlightBlocks()
     {
+        ClearBlockHighlights();
         Block db = InputManager.ins.draggedBlock;
+        if (db == null) return;
+
+        // Skip fake anchor children and copy the actual colored sprite asset.
+        foreach (Transform child in db.transform)
+        {
+            if (child.name != "Block tile") continue;
+            SpriteRenderer renderer = child.GetComponent<SpriteRenderer>();
+            if (renderer != null && renderer.sprite != null)
+            {
+                previewSprite = renderer.sprite;
+                break;
+            }
+        }
+        if (previewSprite == null) return;
+
         Vector2Int c = db.GetFirstCoords();
 
         for (int x = c.x; x < c.x + db.size.x; x++)
@@ -216,10 +257,10 @@ public class BoardManager : MonoBehaviour
             for (int x = 0; x < BOARD_SIZE; x++)
                 if (!b[x, y]) return;
             
-            // Using b[x, y] instead of boardBlocks[x, y] ensures the dragged piece's tiles also fade/swap sprites
+            // Include both existing board tiles and the dragged piece's tiles.
             for (int x = 0; x < BOARD_SIZE; x++)
                 if (b[x, y])
-                    b[x, y].Fade(0.2f, db.defaultColor);
+                    PreviewBlock(b[x, y]);
         }
         else
         {
@@ -251,10 +292,10 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < BOARD_SIZE; y++)
                 if (!b[x, y]) return;
 
-            // Using b[x, y] instead of boardBlocks[x, y] ensures the dragged piece's tiles also fade/swap sprites
+            // Include both existing board tiles and the dragged piece's tiles.
             for (int y = 0; y < BOARD_SIZE; y++)
                 if (b[x, y])
-                    b[x, y].Fade(0.2f, db.defaultColor);
+                    PreviewBlock(b[x, y]);
         }
         else
         {
