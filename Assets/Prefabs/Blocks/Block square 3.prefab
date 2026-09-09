@@ -133,10 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114544122911149538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,10 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114257352085482584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,10 +467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114818546014240116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,10 +634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114700010285316062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,10 +801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114931080100861160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -983,10 +968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114899761291612538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1153,10 +1135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114847339010209354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1323,10 +1302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114667740465527032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1439,7 +1415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabIndex: 11
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  defaultColor: {r: 0.105882354, g: 0.34901962, b: 0.81960785, a: 1}
   size: {x: 3, y: 3}
   structure:
   - {x: 0, y: 0}
@@ -1635,10 +1611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 4489128964678712130, guid: 66cd496c931e4314bae24fe3f7d9200c, type: 3}
 --- !u!114 &114107687651345656
 MonoBehaviour:
   m_ObjectHideFlags: 0

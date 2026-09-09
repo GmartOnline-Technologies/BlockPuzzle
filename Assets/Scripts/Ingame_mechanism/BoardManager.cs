@@ -6,14 +6,12 @@ public class BoardManager : MonoBehaviour
 {
     public static BoardManager ins;
 
-    public const int BOARD_SIZE = 8; // Locked to your 8x8 grid
+    public const int BOARD_SIZE = 8;
     public const int BLOCKS_AMOUNT = 3;
 
     public GameObject boardTilePrefabA;
     public GameObject boardTilePrefabB;
     public GameObject blockTilePrefab;
-    
-    // The array length is now dynamic based on what you add in the Inspector
     public GameObject[] blockPrefabs; 
     
     public Transform gameTransform;
@@ -83,10 +81,8 @@ public class BoardManager : MonoBehaviour
 
     public void MoveBlocks(int i)
     {
-        // 1. Remove the placed block
         blocks[i] = null;
 
-        // 2. Check if tray is completely empty
         bool isTrayEmpty = true;
         for (int j = 0; j < BLOCKS_AMOUNT; j++)
         {
@@ -97,12 +93,10 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        // 3. Spawn batch of 3 only if the tray is completely empty
         if (isTrayEmpty)
         {
             for (int j = 0; j < BLOCKS_AMOUNT; j++)
             {
-                // Dynamically select a random prefab based on your exact array size
                 int randomIndex = Rand(0, blockPrefabs.Length);
                 blocks[j] = SpawnBlock(j, randomIndex);
                 blocks[j].SetBasePosition(j, true);
@@ -117,7 +111,6 @@ public class BoardManager : MonoBehaviour
 
         for (int i = 0; i < BLOCKS_AMOUNT; i++)
         {
-            // Safely skip any slots that are currently empty
             if (blocks[i] == null)
                 continue;
 
@@ -195,7 +188,6 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        // Initialize the first 3 blocks on startup safely
         for (int i = 0; i < BLOCKS_AMOUNT; i++)
         {
             int randomIndex = Rand(0, blockPrefabs.Length);
@@ -224,9 +216,10 @@ public class BoardManager : MonoBehaviour
             for (int x = 0; x < BOARD_SIZE; x++)
                 if (!b[x, y]) return;
             
+            // Using b[x, y] instead of boardBlocks[x, y] ensures the dragged piece's tiles also fade/swap sprites
             for (int x = 0; x < BOARD_SIZE; x++)
-                if (boardBlocks[x, y])
-                    boardBlocks[x, y].Fade(0.2f, db.defaultColor);
+                if (b[x, y])
+                    b[x, y].Fade(0.2f, db.defaultColor);
         }
         else
         {
@@ -258,9 +251,10 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < BOARD_SIZE; y++)
                 if (!b[x, y]) return;
 
+            // Using b[x, y] instead of boardBlocks[x, y] ensures the dragged piece's tiles also fade/swap sprites
             for (int y = 0; y < BOARD_SIZE; y++)
-                if (boardBlocks[x, y])
-                    boardBlocks[x, y].Fade(0.2f, db.defaultColor);
+                if (b[x, y])
+                    b[x, y].Fade(0.2f, db.defaultColor);
         }
         else
         {

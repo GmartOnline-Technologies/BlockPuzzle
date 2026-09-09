@@ -1,34 +1,25 @@
 ﻿using UnityEngine;
+using System.Collections;
 
-public class BlockDestroyAnimation : MonoBehaviour
+public class BlockDestroyAnimation : MonoBehaviour 
 {
-    public Sprite destroyedBlock;
-    public Vector3 rotation = new Vector3(0, 0, 360);
-    public Vector3 scale = new Vector3(0, 0, 0);
-    public Color color = new Color(1, 1, 1, 1);
-
-    private float duration;
-    private float fraction;
-
-    public void SetAnimation(float t)
+    public void SetAnimation(float time) 
     {
-        duration = t;
-        fraction = 0;
+        StartCoroutine(ShrinkRoutine(time));
     }
 
-    private void Update()
+    private IEnumerator ShrinkRoutine(float time) 
     {
-        if (fraction >= 1)
+        Vector3 startScale = transform.localScale;
+        float elapsed = 0;
+        
+        while (elapsed < time) 
         {
-            if (transform.parent.childCount > 0)
-                Destroy(gameObject);
-            else
-                Destroy(transform.parent.gameObject);
+            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, elapsed / time);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
         
-        fraction += Time.deltaTime / duration;
-
-        transform.eulerAngles = Vector3.Lerp(new Vector3(0, 0, 0), rotation, fraction);
-        transform.localScale = Vector3.Lerp(new Vector3(1, 1, 1), scale, fraction);
+        Destroy(gameObject);
     }
 }

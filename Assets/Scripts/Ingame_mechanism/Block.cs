@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class Block : MonoBehaviour
 {
@@ -42,8 +42,8 @@ public class Block : MonoBehaviour
 
 public void Move(float t, Vector3 d)
 {
-    // Instantly snap to the destination coordinate instead of animating
-    transform.position = d; 
+    GetComponent<BlockMovingAnimation>().enabled = true;
+    GetComponent<BlockMovingAnimation>().SetAnimation(t, d);
 }
     public bool IsMoving()
     {
@@ -52,17 +52,16 @@ public void Move(float t, Vector3 d)
 
     public void Scale(bool isDragged, float t)
 {
+    GetComponent<BlockScaleAnimation>().enabled = true;
+    GetComponent<BlockScaleAnimation>().SetAnimation(isDragged, t);
+    
     if (isDragged)
     {
-        // 1. DRAGGED STATE: Full size (1.0) so the grid collision math works perfectly.
-        transform.localScale = Vector3.one;
+        // Full size tiles
         ScaleTiles(baseScale);
     }
     else
     {
-        // 2. TRAY STATE: Reduced from 0.65f to 0.5f so large shapes fit cleanly on screen.
-        transform.localScale = new Vector3(0.5f, 0.5f, 1f);
-        
         // Tiles scale down slightly more to keep the crisp gaps between cells.
         ScaleTiles(baseScale * 0.85f); 
     }
@@ -88,11 +87,18 @@ public void Move(float t, Vector3 d)
         return transform.GetChild(1).GetComponent<SpriteRenderer>().color;
     }
 
-    public void ChangeColor(Color c)
+   public void ChangeColor(Color c)
     {
         foreach (Transform t in transform)
+        {
             if (t.name == "Block tile")
-                t.GetComponent<SpriteRenderer>().color = c;
+            {
+                // Only change the Alpha (transparency) so the pre-colored sprite stays bright!
+                Color originalColor = t.GetComponent<SpriteRenderer>().color;
+                originalColor.a = c.a; 
+                t.GetComponent<SpriteRenderer>().color = originalColor;
+            }
+        }
     }
 
     public void ScaleTiles(Vector3 s)

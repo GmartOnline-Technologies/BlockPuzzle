@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabIndex: 7
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  defaultColor: {r: 0.98039216, g: 0.8, b: 0.13333334, a: 1}
   size: {x: 1, y: 1}
   structure:
   - {x: 0, y: 0}
@@ -259,10 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedBlock: {fileID: 21300000, guid: 6eeaaee5aa83dfe4db48326a3191f341, type: 3}
-  rotation: {x: 0, y: 0, z: 225}
-  scale: {x: 0, y: 0, z: 0}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  dissolveParticles: {fileID: 1791170381179641272, guid: 0157609c34a8a7e439837c65a4c5195a, type: 3}
 --- !u!114 &114420803982182280
 MonoBehaviour:
   m_ObjectHideFlags: 0

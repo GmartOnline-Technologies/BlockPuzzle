@@ -1,40 +1,27 @@
-﻿using UnityEngine;
+using UnityEngine;
+using System.Collections;
 
-public class BlockScaleAnimation : MonoBehaviour
+public class BlockScaleAnimation : MonoBehaviour 
 {
-    private Block block;
-
-    private float duration;
-    private float fraction;
-    private Vector3[] baseScale = new Vector3[2];
-    private Vector3[] destinationScale = new Vector3[2];
-
-    public void SetAnimation(bool s, float t)
+    public void SetAnimation(bool isDragged, float t) 
     {
-        duration = t;
-        fraction = 0;
-
-        baseScale[0] = transform.localScale;
-        baseScale[1] = s ? block.scaledScale : block.baseScale;
-        destinationScale[0] = s ? Vector3.one : new Vector3(0.6f, 0.6f, 0.6f);
-        destinationScale[1] = s ? block.baseScale : block.scaledScale;
+        Vector3 target = isDragged ? Vector3.one : new Vector3(0.5f, 0.5f, 1f);
+        StartCoroutine(ScaleRoutine(t, target));
     }
 
-    private void Awake()
+    private IEnumerator ScaleRoutine(float time, Vector3 target) 
     {
-        block = GetComponent<Block>();
-    }
-
-    private void Update()
-    {
-        if (fraction >= 1)
+        Vector3 start = transform.localScale;
+        float elapsed = 0;
+        
+        while(elapsed < time) 
         {
-            enabled = false;
+            transform.localScale = Vector3.Lerp(start, target, elapsed / time);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
-
-        fraction += Time.deltaTime / duration;
-
-        transform.localScale = Vector3.Lerp(baseScale[0], destinationScale[0], fraction);
-        block.ScaleTiles(Vector3.Lerp(baseScale[1], destinationScale[1], fraction));
+        
+        transform.localScale = target;
+        this.enabled = false;
     }
 }

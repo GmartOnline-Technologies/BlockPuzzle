@@ -1,30 +1,26 @@
 ﻿using UnityEngine;
+using System.Collections;
 
-public class BlockMovingAnimation : MonoBehaviour
+public class BlockMovingAnimation : MonoBehaviour 
 {
-    private float duration;
-    private float fraction;
-    private Vector3 startPos;
-    private Vector3 destination;
-
-    public void SetAnimation(float t, Vector3 d)
+    public void SetAnimation(float t, Vector3 d) 
     {
-        duration = t;
-        fraction = 0;
-        startPos = transform.position;
-        destination = d;
+        StartCoroutine(MoveRoutine(t, d));
     }
 
-	private void Update()
-	{
-        if (fraction >= 1)
+    private IEnumerator MoveRoutine(float time, Vector3 target) 
+    {
+        Vector3 start = transform.position;
+        float elapsed = 0;
+        
+        while(elapsed < time) 
         {
-            transform.position = destination;
-            enabled = false;
+            transform.position = Vector3.Lerp(start, target, elapsed / time);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
-
-        fraction += Time.deltaTime / duration;
-
-        transform.position = Vector3.Lerp(startPos, destination, fraction);
+        
+        transform.position = target;
+        this.enabled = false;
     }
 }
