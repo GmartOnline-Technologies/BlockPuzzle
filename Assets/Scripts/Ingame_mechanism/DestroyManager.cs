@@ -57,6 +57,8 @@ public class DestroyManager : MonoBehaviour
         // Snapshot both the lines and their tiles before any animation begins.
         Vector2Int[] clearLines = lines.ToArray();
         int count = clearLines.Length;
+        GameManager scoreManager = GameManager.ins;
+        int scoreSession = scoreManager != null ? scoreManager.ScoreSessionVersion : -1;
         int n = BoardManager.BOARD_SIZE;
         int[,] steps = new int[n, n];
         for (int x = 0; x < n; x++)
@@ -79,6 +81,13 @@ public class DestroyManager : MonoBehaviour
             for (int y = 0; y < n; y++)
                 if (steps[x, y] >= 0 && bm.boardBlocks[x, y] != null)
                     tiles.Add(new ClearTile { tile = bm.boardBlocks[x, y], x = x, y = y, step = steps[x, y] });
+
+        // Start the reward at the center of the cells involved in this clear.
+        Vector3 rewardOrigin = Vector3.zero;
+        foreach (ClearTile entry in tiles)
+            rewardOrigin += bm.boardTiles[entry.x, entry.y].transform.position;
+        if (tiles.Count > 0) rewardOrigin /= tiles.Count;
+        rewardOrigin.z = -1f;
 
         float settle = Mathf.Max(0f, placementSettleTime);
         float charge = Mathf.Max(0f, chargeTime);
@@ -103,13 +112,21 @@ public class DestroyManager : MonoBehaviour
             }
 
             if (charge > 0f) yield return new WaitForSeconds(charge);
+            
             if (playFeedback)
             {
                 // One shake at burst time, after the charge, for the entire clear.
                 CameraShake.ShakeMainCamera(count);
+                
+                // One reward per clear; loading a board (playFeedback=false) earns none.
+                if (scoreManager != null && tiles.Count > 0
+                    && scoreManager.ScoreSessionVersion == scoreSession)
+                    scoreManager.AwardLineClear(count, rewardOrigin);
+
                 foreach (Vector2Int line in clearLines)
                     effects.Line(bm, line.x >= 0 ? line.x : line.y,
                         line.x >= 0, Mathf.Max(0.08f, sweep));
+                
                 effects.Combo(count, bm);
             }
 

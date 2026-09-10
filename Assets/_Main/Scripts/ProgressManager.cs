@@ -3,33 +3,24 @@ using System.Collections;
 
 public class ProgressManager : MonoBehaviour
 {
+    [Header("Legacy progress (deferred)")]
+    [Tooltip("Leave disabled while the new saving system is being developed.")]
+    public bool enableLegacyAutoProgress = false;
+
+    private static ProgressManager instance;
+
     public static void LoadProgress()
     {
-        bool[] audioMutes = GetAudioMutes();
-        float[] audioVolumes = GetAudioVolumes();
-
-        AudioManager.ins.ChangeMusicVolume(audioVolumes[0]);
-        AudioManager.ins.ChangeSoundVolume(audioVolumes[1]);
-        AudioManager.ins.ChangeSliderValues(audioVolumes);
-
-        if (audioMutes[0])
-            AudioManager.ins.MuteMusic();
-        else
-            AudioManager.ins.UnmuteMusic();
-        if (audioMutes[1])
-            AudioManager.ins.MuteSound();
-        else
-            AudioManager.ins.UnmuteSound();
+        // 1. Audio loading logic removed to prevent crashes!
 
         GameManager.ins.firstBeatenScore = PlayerPrefs.HasKey("firstBeatenScore") ? GetBool("firstBeatenScore") : true;
         GameManager.ins.continueGame = PlayerPrefs.HasKey("continueGame") ? GetBool("continueGame") : true;
+        
         GameManager.ins.score = PlayerPrefs.GetInt("score");
-        GameManager.ins.scoreText.text = GameManager.ins.score.ToString();
+        if (GameManager.ins.scoreText != null) GameManager.ins.scoreText.text = GameManager.ins.score.ToString();
+        
         GameManager.ins.bestScore = GetBestScore();
-        GameManager.ins.bestScoreText.text = GameManager.ins.bestScore.ToString();
-
-        if (!GameManager.ins.firstBeatenScore)
-            GameManager.ins.bestScoreIconLayer.GetComponent<Animator>().Play("Beaten score");
+        if (GameManager.ins.bestScoreText != null) GameManager.ins.bestScoreText.text = GameManager.ins.bestScore.ToString();
 
         for (int y = 0; y < BoardManager.BOARD_SIZE; y++)
         {
@@ -58,11 +49,9 @@ public class ProgressManager : MonoBehaviour
 
     public static void SaveProgress()
     {
-        SetAudioMutes(AudioManager.ins.GetAudioMutes());
-        SetAudioVolumes(AudioManager.ins.GetAudioVolumes());
+        // 2. Audio saving logic removed to prevent crashes!
         SetBestScore(GameManager.ins.bestScore);
 
-        // // // // // // // // //      SAVE BOARD PROGRESS (IS NOT GAME OVER)      // // // // // // // // //
         if (!GameManager.ins.gameOver)
         {
             SetBool("firstBeatenScore", GameManager.ins.firstBeatenScore);
@@ -88,31 +77,19 @@ public class ProgressManager : MonoBehaviour
             for (int i = 0; i < BoardManager.BLOCKS_AMOUNT; i++)
                 PlayerPrefs.SetInt(i + "block", BoardManager.ins.blocks[i].prefabIndex);
         }
-        // // // // // // // // //      DO NOT SAVE BOARD PROGRESS (IS GAME OVER)      // // // // // // // // //
-else
-{
-    SetBool("firstBeatenScore", true);
-    SetBool("continueGame", true);
-    PlayerPrefs.SetInt("score", 0);
+        else
+        {
+            SetBool("firstBeatenScore", true);
+            SetBool("continueGame", true);
+            PlayerPrefs.SetInt("score", 0);
 
-    for (int y = 0; y < BoardManager.BOARD_SIZE; y++)
-        for (int x = 0; x < BoardManager.BOARD_SIZE; x++)
-                SetColor(GetBlockKey(x, y), Color.black);
+            for (int y = 0; y < BoardManager.BOARD_SIZE; y++)
+                for (int x = 0; x < BoardManager.BOARD_SIZE; x++)
+                        SetColor(GetBlockKey(x, y), Color.black);
 
-    for (int i = 0; i < BoardManager.BLOCKS_AMOUNT; i++)
-        // Update this specific line:
-        PlayerPrefs.SetInt(i + "block", BoardManager.Rand(0, BoardManager.ins.blockPrefabs.Length));
-}
-    }
-
-    public static bool[] GetAudioMutes()
-    {
-        bool[] am = new bool[2];
-
-        am[0] = PlayerPrefs.HasKey("musicMute") ? GetBool("musicMute") : false;
-        am[1] = PlayerPrefs.HasKey("soundMute") ? GetBool("soundMute") : false;
-
-        return am;
+            for (int i = 0; i < BoardManager.BLOCKS_AMOUNT; i++)
+                PlayerPrefs.SetInt(i + "block", BoardManager.Rand(0, BoardManager.ins.blockPrefabs.Length));
+        }
     }
 
     public static float[] GetAudioVolumes()
@@ -148,35 +125,54 @@ else
 
         if (s > bs)
         {
-            GameManager.ins.bestScoreText.GetComponent<ScoreAddAnimation>().enabled = true;
-            GameManager.ins.bestScoreText.GetComponent<ScoreAddAnimation>().SetAnimation(s - bs, bs, 0.4f);
             GameManager.ins.bestScore = s;
             PlayerPrefs.SetInt("bestScore", s);
 
+            if (GameManager.ins.bestScoreText != null)
+            {
+                ScoreAddAnimation anim = GameManager.ins.bestScoreText.GetComponent<ScoreAddAnimation>();
+                if (anim != null)
+                {
+                    anim.enabled = true;
+                    anim.SetAnimation(s - bs, bs, 0.4f);
+                }
+                else
+                {
+                    GameManager.ins.bestScoreText.text = s.ToString();
+                }
+            }
+
             if (GameManager.ins.firstBeatenScore)
             {
-                GameManager.ins.bestScoreIconLayer.GetComponent<Animator>().Play("Beaten score");
                 GameManager.ins.firstBeatenScore = false;
             }
         }
     }
 
     private void Awake()
-	{
+    {
+        if (instance != null && instance != this)
+        {
+            enabled = false;
+            return;
+        }
+        instance = this;
         StartCoroutine(Wait());
-	}
+    }
 
     private IEnumerator Wait()
     {
         yield return new WaitForSeconds(0.02f);
 
-        LoadProgress();
-        BoardManager.ins.CheckBoard(true);
+        // BoardManager already created the three starting tray pieces.
+        // Legacy restoration is opt-in; existing PlayerPrefs are not deleted.
+        if (enableLegacyAutoProgress) LoadProgress();
+        if (BoardManager.ins != null) BoardManager.ins.CheckBoard(true);
     }
 
     private void OnApplicationPause(bool isPaused)
     {
-        if (isPaused)
+        if (isPaused && enableLegacyAutoProgress && instance == this)
             SaveProgress();
     }
 
@@ -217,13 +213,14 @@ else
         SetFloatArray(k, comp);
     }
 
-    private static float[] GetFloatArray(string k, int s)
+   private static float[] GetFloatArray(string k, int s)
     {
         float[] arr = new float[s];
         
         if (!PlayerPrefs.HasKey(k))
         {
-            Debug.LogError("The float array does not exist!");
+            // REMOVE OR COMMENT OUT THIS LINE!
+            // Debug.LogError("The float array does not exist!"); 
             return null;
         }
 

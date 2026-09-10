@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 // Generated visuals reuse the existing block sprites. No particle prefab or TMP required.
 [DisallowMultipleComponent]
@@ -8,6 +9,13 @@ public class LineClearEffects : MonoBehaviour
     [Range(32, 256)] public int maxVisuals = 144;
     public Color beamColor = new Color(0.35f, 0.9f, 1f, 0.65f);
     public bool showComboText = true;
+
+    [Header("Popup artwork")]
+    public Sprite goodPopupSprite;
+    public Sprite greatPopupSprite;
+    [Range(0.2f, 0.8f)] public float popupWidth = 0.52f;
+    [Min(0.1f)] public float popupDuration = 0.8f;
+    public float popupOffsetY = 12f;
 
     private class Visual
     {
@@ -25,7 +33,11 @@ public class LineClearEffects : MonoBehaviour
     private float comboAge = 1f;
     private Vector3 comboPosition;
     private GUIStyle comboStyle;
-    private const float ComboLife = 0.65f;
+    private float ComboLife { get { return Mathf.Max(0.1f, popupDuration); } }
+    private Sprite comboSprite;
+    private Canvas popupCanvas;
+    private CanvasGroup popupGroup;
+    private Image popupImage;
 
     private Sprite WhiteSprite
     {
@@ -137,15 +149,94 @@ public class LineClearEffects : MonoBehaviour
     public void Combo(int lines, BoardManager board)
     {
         if (!showComboText || lines < 2) return;
-        comboText = lines == 2 ? "DOUBLE!" : "AMAZING!";
+        comboText = lines == 2 ? "GOOD!" : "GREAT!";
+        comboSprite = lines == 2 ? goodPopupSprite : greatPopupSprite;
         comboAge = 0f;
         comboPosition = (board.boardTiles[0, BoardManager.BOARD_SIZE - 1].bounds.center
             + board.boardTiles[BoardManager.BOARD_SIZE - 1, BoardManager.BOARD_SIZE - 1].bounds.center) * 0.5f;
+        if (comboSprite != null)
+        {
+            EnsurePopupCanvas();
+            popupImage.sprite = comboSprite;
+        }
+        UpdatePopup();
+    }
+
+    private void EnsurePopupCanvas()
+    {
+        if (popupCanvas != null) return;
+
+        // Native UI Image handles transparent sprites and sprite-atlas UVs.
+        GameObject root = new GameObject("Line clear popup", typeof(RectTransform),
+            typeof(Canvas), typeof(CanvasGroup));
+        popupCanvas = root.GetComponent<Canvas>();
+        popupCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        popupCanvas.sortingOrder = 300;
+        popupGroup = root.GetComponent<CanvasGroup>();
+        popupGroup.interactable = false;
+        popupGroup.blocksRaycasts = false;
+        popupGroup.alpha = 0f;
+
+        GameObject artwork = new GameObject("Popup artwork", typeof(RectTransform),
+            typeof(CanvasRenderer), typeof(Image));
+        artwork.transform.SetParent(root.transform, false);
+        popupImage = artwork.GetComponent<Image>();
+        popupImage.preserveAspect = true;
+        popupImage.raycastTarget = false;
+        popupImage.color = Color.white;
+        popupImage.rectTransform.anchorMin = Vector2.zero;
+        popupImage.rectTransform.anchorMax = Vector2.zero;
+        popupImage.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+    }
+
+    private void UpdatePopup()
+    {
+        if (popupCanvas == null) return;
+        Camera camera = Camera.main;
+        if (!showComboText || comboSprite == null || comboAge >= ComboLife || camera == null)
+        {
+            popupGroup.alpha = 0f;
+            return;
+        }
+
+        Vector3 screen = camera.WorldToScreenPoint(comboPosition);
+        if (screen.z <= 0f)
+        {
+            popupGroup.alpha = 0f;
+            return;
+        }
+
+        float t = Mathf.Clamp01(comboAge / ComboLife);
+        // Fast entrance, a small overshoot, then a readable hold and soft exit.
+        float pop = t < 0.18f
+            ? Mathf.Lerp(0.65f, 1.12f, Mathf.SmoothStep(0f, 1f, t / 0.18f))
+            : Mathf.Lerp(1.12f, 1f, Mathf.SmoothStep(0f, 1f, (t - 0.18f) / 0.16f));
+        float alphaIn = Mathf.Clamp01(t / 0.07f);
+        float alphaOut = 1f - Mathf.SmoothStep(0f, 1f, (t - 0.6f) / 0.4f);
+        popupGroup.alpha = alphaIn * alphaOut;
+
+        Rect safe = Screen.safeArea;
+        float aspect = comboSprite.rect.width / Mathf.Max(1f, comboSprite.rect.height);
+        float baseWidth = Mathf.Min(safe.width, safe.height) * Mathf.Clamp(popupWidth, 0.2f, 0.8f);
+        float width = Mathf.Min(baseWidth * pop, safe.width * 0.94f);
+        float height = width / aspect;
+        if (height > safe.height * 0.4f)
+        {
+            height = safe.height * 0.4f;
+            width = height * aspect;
+        }
+        popupImage.rectTransform.sizeDelta = new Vector2(width, height);
+        // Place above the board, keeping the animated artwork inside the safe area.
+        float x = Mathf.Clamp(screen.x, safe.xMin + width * 0.5f, safe.xMax - width * 0.5f);
+        float y = Mathf.Clamp(screen.y + baseWidth / aspect * 0.55f + popupOffsetY + t * 22f,
+            safe.yMin + height * 0.5f, safe.yMax - height * 0.5f);
+        popupImage.rectTransform.anchoredPosition = new Vector2(x, y);
     }
 
     private void Update()
     {
         comboAge += Time.deltaTime;
+        UpdatePopup();
         for (int i = active.Count - 1; i >= 0; i--)
         {
             Visual v = active[i];
@@ -164,10 +255,11 @@ public class LineClearEffects : MonoBehaviour
         }
     }
 
-    // Built-in GUI avoids requiring a Canvas, a font asset, or TextMesh Pro setup.
+    // Keep the original text as a fallback when artwork has not been assigned.
     private void OnGUI()
     {
         if (!showComboText || comboAge >= ComboLife || string.IsNullOrEmpty(comboText)) return;
+        if (comboSprite != null) return;
         Camera camera = Camera.main;
         if (camera == null) return;
         Vector3 screen = camera.WorldToScreenPoint(comboPosition);
@@ -201,11 +293,13 @@ public class LineClearEffects : MonoBehaviour
         }
         active.Clear();
         comboAge = ComboLife;
+        if (popupGroup != null) popupGroup.alpha = 0f;
     }
 
     private void OnDestroy()
     {
         if (visualRoot != null) Destroy(visualRoot.gameObject);
         if (whiteSprite != null) Destroy(whiteSprite);
+        if (popupCanvas != null) Destroy(popupCanvas.gameObject);
     }
 }

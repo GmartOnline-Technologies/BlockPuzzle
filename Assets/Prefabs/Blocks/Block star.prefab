@@ -133,7 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissolveParticles: {fileID: 664646626555961565, guid: f4de1db129941d64bb4b2996575a2ff0, type: 3}
 --- !u!114 &114320516278073160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,7 +299,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissolveParticles: {fileID: 664646626555961565, guid: f4de1db129941d64bb4b2996575a2ff0, type: 3}
 --- !u!114 &114213184174878192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,7 +465,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissolveParticles: {fileID: 664646626555961565, guid: f4de1db129941d64bb4b2996575a2ff0, type: 3}
 --- !u!114 &114417235574209268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -634,7 +631,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissolveParticles: {fileID: 664646626555961565, guid: f4de1db129941d64bb4b2996575a2ff0, type: 3}
 --- !u!114 &114510506265941464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,37 +664,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.99999994, y: 1.0120481, z: 0.19999999}
   m_Center: {x: 0, y: -0.000000059604645, z: 0}
---- !u!1 &1782357685722202
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4727666481556010}
-  m_Layer: 0
-  m_Name: Fake block tile
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4727666481556010
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1782357685722202}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: -1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4479997516207188}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1933279717585662
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,7 +698,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4727666481556010}
   - {fileID: 4772151583724542}
   - {fileID: 4826421056128302}
   - {fileID: 4010337299215562}
@@ -778,7 +742,6 @@ MonoBehaviour:
   defaultColor: {r: 0.84705883, g: 0.14117648, b: 0.23529412, a: 1}
   size: {x: 3, y: 3}
   structure:
-  - {x: 0, y: 0}
   - {x: 1, y: 0}
   - {x: 0, y: 1}
   - {x: 1, y: 1}
@@ -968,7 +931,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725c51ca99f4a0f4ab9891d07818de09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissolveParticles: {fileID: 664646626555961565, guid: f4de1db129941d64bb4b2996575a2ff0, type: 3}
 --- !u!114 &114925622083388554
 MonoBehaviour:
   m_ObjectHideFlags: 0

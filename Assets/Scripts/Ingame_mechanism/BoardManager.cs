@@ -53,7 +53,8 @@ public class BoardManager : MonoBehaviour
 
     public static int Rand(int min, int max)
     {
-        return (int)UnityEngine.Random.Range(min, max - 0.000001f);
+        // Integer Range excludes max; float rounding could previously select max.
+        return UnityEngine.Random.Range(min, max);
     }
 
     public BlockTile SpawnBlockTile(int x, int y)
@@ -65,10 +66,56 @@ public class BoardManager : MonoBehaviour
         return boardBlocks[x, y];
     }
 
+    private bool IsValidBlockPrefab(int index)
+    {
+        return blockPrefabs != null && index >= 0 && index < blockPrefabs.Length
+            && blockPrefabs[index] != null && blockPrefabs[index].GetComponent<Block>() != null;
+    }
+
+    public int GetRandomBlockPrefabIndex()
+    {
+        int selected = -1;
+        int validCount = 0;
+        if (blockPrefabs == null) return selected;
+        for (int index = 0; index < blockPrefabs.Length; index++)
+        {
+            if (!IsValidBlockPrefab(index)) continue;
+            validCount++;
+            if (UnityEngine.Random.Range(0, validCount) == 0) selected = index;
+        }
+        return selected;
+    }
+
     public Block SpawnBlock(int i, int x)
     {
+        if (i < 0 || i >= BLOCKS_AMOUNT)
+        {
+            Debug.LogError("Cannot spawn a tray block: slot index must be 0, 1 or 2.", this);
+            return null;
+        }
+
+        // A saved prefab index can become invalid after editing the prefab list.
+        if (!IsValidBlockPrefab(x)) x = GetRandomBlockPrefabIndex();
+        if (x < 0)
+        {
+            Debug.LogError("BoardManager needs at least one assigned shape prefab with a Block component.", this);
+            return blocks[i];
+        }
+
+        // Each tray slot owns exactly one piece. Hide the previous one immediately;
+        // Destroy alone waits until the end of the frame and can leave it visible.
+        Block previous = blocks[i];
+        blocks[i] = null;
+        if (previous != null)
+        {
+            previous.gameObject.SetActive(false);
+            Destroy(previous.gameObject);
+        }
+
         Block b = Instantiate(blockPrefabs[x], gameTransform).GetComponent<Block>();
+        b.prefabIndex = x;
         b.SetBasePosition(i);
+        blocks[i] = b;
         return b;
     }
 
@@ -98,9 +145,7 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < BLOCKS_AMOUNT; j++)
             {
-                int randomIndex = Rand(0, blockPrefabs.Length);
-                blocks[j] = SpawnBlock(j, randomIndex);
-                blocks[j].SetBasePosition(j, true);
+                SpawnBlock(j, GetRandomBlockPrefabIndex());
             }
         }
     }
@@ -203,8 +248,12 @@ public class BoardManager : MonoBehaviour
 
     private void Awake()
     {
-        if (!ins)
-            ins = this;
+        if (ins != null && ins != this)
+        {
+            enabled = false;
+            return;
+        }
+        ins = this;
 
         boardTileScale = GameScaler.GetBoardTileScale();
         scaledBlockTileScale = GameScaler.GetScaledBlockTileScale();
@@ -231,8 +280,7 @@ public class BoardManager : MonoBehaviour
 
         for (int i = 0; i < BLOCKS_AMOUNT; i++)
         {
-            int randomIndex = Rand(0, blockPrefabs.Length);
-            blocks[i] = SpawnBlock(i, randomIndex);
+            SpawnBlock(i, GetRandomBlockPrefabIndex());
         }
     }
 

@@ -18,27 +18,44 @@ public class Block : MonoBehaviour
     [HideInInspector]
     public Vector3 scaledScale;
 
-   public void SetBasePosition(int i, bool cp = true)
-{
-    float boardCenterX = (BoardManager.BOARD_SIZE - 1) / 2.0f;
-    float blockSpacing = 3.2f; // Distance between the 3 tray slots
-    
-    float slotCenterX = boardCenterX + ((i - 1) * blockSpacing);
+    public void SetBasePosition(int i, bool cp = true)
+    {
+        float boardCenterX = (BoardManager.BOARD_SIZE - 1) / 2f;
+        float slotSpacing = BoardManager.BOARD_SIZE / (float)BoardManager.BLOCKS_AMOUNT;
+        float slotCenterX = boardCenterX + (i - 1) * slotSpacing;
+        Vector3 slotCenter = new Vector3(slotCenterX, GameScaler.GetBlockY(), 0f);
 
-    // Calculate how wide the shape is, multiplied by our new smaller tray scale (0.5f)
-    float shapeCenterX = (size.x - 1) / 2.0f;
-    float scaledOffset = shapeCenterX * 0.5f; // <-- This MUST match the 0.5f in the Scale method!
+        // Measure the artwork at its final tray size, independent of drag animations.
+        Bounds artwork = new Bounds();
+        bool hasArtwork = false;
+        Vector3 trayTileScale = baseScale * 0.85f;
+        foreach (Transform child in transform)
+        {
+            if (child.name.Trim() != "Block tile") continue;
+            SpriteRenderer renderer = child.GetComponent<SpriteRenderer>();
+            if (renderer == null || renderer.sprite == null) continue;
+            Bounds spriteBounds = renderer.sprite.bounds;
+            for (int corner = 0; corner < 4; corner++)
+            {
+                Vector3 point = new Vector3(
+                    (corner & 1) == 0 ? spriteBounds.min.x : spriteBounds.max.x,
+                    (corner & 2) == 0 ? spriteBounds.min.y : spriteBounds.max.y,
+                    spriteBounds.center.z);
+                if (renderer.flipX) point.x = -point.x;
+                if (renderer.flipY) point.y = -point.y;
+                point = child.localPosition + child.localRotation * Vector3.Scale(point, trayTileScale);
+                if (!hasArtwork) { artwork = new Bounds(point, Vector3.zero); hasArtwork = true; }
+                else artwork.Encapsulate(point);
+            }
+        }
 
-    // Shift the block left by the offset so it centers perfectly in its UI slot
-    float finalX = slotCenterX - scaledOffset;
-
-    basePosition = new Vector3(finalX, GameScaler.GetBlockY(), 0);
-
-    if (cp)
-        transform.position = basePosition;
-
-    posIndex = i;
-} 
+        Vector3 center = hasArtwork ? artwork.center : Vector3.zero;
+        Vector3 offset = transform.localRotation * Vector3.Scale(center, new Vector3(0.5f, 0.5f, 1f));
+        if (transform.parent != null) offset = transform.parent.TransformVector(offset);
+        basePosition = slotCenter - offset;
+        if (cp) transform.position = basePosition;
+        posIndex = i;
+    }
 
 public void Move(float t, Vector3 d)
 {

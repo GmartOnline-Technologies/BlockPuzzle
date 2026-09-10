@@ -9,6 +9,9 @@ public class InputManager : MonoBehaviour
     [HideInInspector]
     public Block draggedBlock;
 
+    [Header("Placement shine")]
+    public BlockPlacementShine placementShine;
+
     private ScreenOrientation screenOrientation;
     private Vector3 startPos;
     private Vector2Int lastPos = new Vector2Int(-1, -1);
@@ -150,6 +153,14 @@ public class InputManager : MonoBehaviour
                         BoardManager.ins.boardBlocks[start.x + coords.x, start.y + coords.y] = b;
                     }
                 }
+
+                if (placementShine == null)
+                {
+                    placementShine = GetComponent<BlockPlacementShine>();
+                    if (placementShine == null)
+                        placementShine = gameObject.AddComponent<BlockPlacementShine>();
+                }
+                placementShine.Play(draggedBlock);
 
                 BoardManager.ins.MoveBlocks(draggedBlock.posIndex);
                 BoardManager.ins.CheckBoard();
