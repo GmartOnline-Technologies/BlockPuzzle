@@ -20,6 +20,16 @@ public class BoardManager : MonoBehaviour
     public Color boardColor;
     public Color highlightColor;
 
+    [Header("Tutorial auto-fill")]
+    [Tooltip("Enable only in your Tutorial scene. Generates the cross and one square piece.")]
+    public bool tutorialMode;
+    public Sprite tutorialBlueSprite;
+    public Sprite tutorialPurpleSprite;
+    [Tooltip("Zero-based index of the 2 by 2 square in Block Prefabs.")]
+    [Min(0)] public int tutorialSquarePrefabIndex;
+
+    private Block tutorialPiece;
+
     [HideInInspector]
     public Vector3 boardTileScale;
     [HideInInspector]
@@ -46,6 +56,7 @@ public class BoardManager : MonoBehaviour
     public bool CanPlace(Block block, Vector2Int origin)
     {
         if (block == null || !block.HasValidLayout || block.Tiles == null || block.Tiles.Length == 0) return false;
+        if (tutorialMode && (block != tutorialPiece || origin != new Vector2Int(3, 3))) return false;
         if (origin.x < 0 || origin.x >= BOARD_SIZE || origin.y < 0 || origin.y >= BOARD_SIZE) return false;
         for (int i = 0; i < block.Tiles.Length; i++)
         {
@@ -168,6 +179,7 @@ public class BoardManager : MonoBehaviour
     public void MoveBlocks(int i)
     {
         blocks[i] = null;
+        if (tutorialMode) return;
 
         bool isTrayEmpty = true;
         for (int j = 0; j < BLOCKS_AMOUNT; j++)
@@ -329,10 +341,66 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+        if (tutorialMode)
+        {
+            CreateTutorialLayout();
+            return;
+        }
+
         for (int i = 0; i < BLOCKS_AMOUNT; i++)
         {
             SpawnBlock(i, GetRandomBlockPrefabIndex());
         }
+    }
+
+    private void CreateTutorialLayout()
+    {
+        // Validate references before creating any playable tutorial tiles.
+        if (tutorialBlueSprite == null || tutorialPurpleSprite == null ||
+            blockTilePrefab == null || blockTilePrefab.GetComponent<BlockTile>() == null ||
+            blockTilePrefab.GetComponent<SpriteRenderer>() == null ||
+            !IsValidBlockPrefab(tutorialSquarePrefabIndex))
+        {
+            Debug.LogError("Tutorial setup: assign both sprites, a Block Tile prefab with BlockTile and SpriteRenderer, and a valid square prefab index.", this);
+            return;
+        }
+
+        tutorialPiece = SpawnBlock(1, tutorialSquarePrefabIndex);
+        if (tutorialPiece == null) return;
+        bool square = tutorialPiece.HasValidLayout && tutorialPiece.TileCells != null &&
+            tutorialPiece.TileCells.Length == 4;
+        var cells = new HashSet<Vector2Int>();
+        if (square)
+        {
+            foreach (Vector2Int cell in tutorialPiece.TileCells)
+                square &= cell.x >= 0 && cell.x <= 1 && cell.y >= 0 && cell.y <= 1 && cells.Add(cell);
+        }
+        if (!square)
+        {
+            Debug.LogError("Tutorial Square Prefab Index must point to a valid 2 by 2 square with four real tiles.", this);
+            tutorialPiece.gameObject.SetActive(false);
+            Destroy(tutorialPiece.gameObject);
+            tutorialPiece = null;
+            blocks[1] = null;
+            return;
+        }
+
+        for (int y = 0; y < BOARD_SIZE; y++)
+        {
+            for (int x = 0; x < BOARD_SIZE; x++)
+            {
+                bool middleColumn = x == 3 || x == 4;
+                bool middleRow = y == 3 || y == 4;
+                // Exclusive OR leaves the center 2 by 2 and all corners empty.
+                if (middleColumn == middleRow) continue;
+                BlockTile tile = SpawnBlockTile(x, y);
+                SpriteRenderer renderer = tile.GetComponent<SpriteRenderer>();
+                renderer.sprite = middleColumn ? tutorialBlueSprite : tutorialPurpleSprite;
+                renderer.color = Color.white;
+                tile.defaultColor = Color.white;
+            }
+        }
+        CheckSpace(true);
     }
 
     private void CheckHLine(int y)
