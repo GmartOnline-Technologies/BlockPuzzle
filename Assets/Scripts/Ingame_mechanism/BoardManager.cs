@@ -33,20 +33,58 @@ public class BoardManager : MonoBehaviour
 
     public bool IsInRange(Vector2 o, Vector2 e)
     {
-        return o.x >= -0.5f && e.x <= BOARD_SIZE - 0.5f &&
-               o.y >= -0.5f && e.y <= BOARD_SIZE - 0.5f;
+        return o.x >= -0.5f && o.y >= -0.5f && e.x >= o.x && e.y >= o.y
+            && e.x < BOARD_SIZE - 0.5f && e.y < BOARD_SIZE - 0.5f;
     }
 
-    public bool IsEmpty(Block b, Vector2 o)
+    public bool IsEmpty(Block block, Vector2 origin)
     {
-        for (int i = 0; i < b.structure.Length; i++)
+        if (!(origin.x >= 0f && origin.x < BOARD_SIZE && origin.y >= 0f && origin.y < BOARD_SIZE)) return false;
+        return CanPlace(block, new Vector2Int(Block.RoundCell(origin.x), Block.RoundCell(origin.y)));
+    }
+
+    public bool CanPlace(Block block, Vector2Int origin)
+    {
+        if (block == null || !block.HasValidLayout || block.Tiles == null || block.Tiles.Length == 0) return false;
+        if (origin.x < 0 || origin.x >= BOARD_SIZE || origin.y < 0 || origin.y >= BOARD_SIZE) return false;
+        for (int i = 0; i < block.Tiles.Length; i++)
         {
-            if (b.transform.GetChild(i).name == "Block tile")
-            {
-                Vector2Int coords = b.structure[i];
-                if (boardBlocks[(int)o.x + coords.x, (int)o.y + coords.y])
-                    return false;
-            }
+            if (block.Tiles[i] == null) return false;
+            long x = (long)origin.x + block.TileCells[i].x;
+            long y = (long)origin.y + block.TileCells[i].y;
+            if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) return false;
+            if (boardBlocks[(int)x, (int)y] != null) return false;
+        }
+        return true;
+    }
+
+    public bool TryGetPlacement(Block block, out Vector2Int origin, out Vector3 rootPosition)
+    {
+        origin = Vector2Int.zero;
+        rootPosition = Vector3.zero;
+        if (block == null || !block.HasValidLayout) return false;
+        origin = block.GetFirstCoords();
+        if (!CanPlace(block, origin)) return false;
+        rootPosition = block.GetPlacementPosition(origin);
+        // Require every visible tile to land at the same cell used by the logic.
+        // This also rejects unsupported rotated/scaled parent transforms safely.
+        for (int i = 0; i < block.Tiles.Length; i++)
+        {
+            Vector3 final = rootPosition + block.transform.TransformVector(block.Tiles[i].transform.localPosition);
+            Vector2Int cell = origin + block.TileCells[i];
+            if (Mathf.Abs(final.x - cell.x) > 0.01f || Mathf.Abs(final.y - cell.y) > 0.01f) return false;
+        }
+        return true;
+    }
+
+    public bool TryPlace(Block block, out Vector2Int origin, out Vector3 rootPosition)
+    {
+        if (!TryGetPlacement(block, out origin, out rootPosition)) return false;
+        // Validate the whole shape first, then commit it as one placement.
+        for (int i = 0; i < block.Tiles.Length; i++)
+        {
+            Vector2Int cell = origin + block.TileCells[i];
+            boardBlocks[cell.x, cell.y] = block.Tiles[i];
         }
         return true;
     }
@@ -222,28 +260,41 @@ public class BoardManager : MonoBehaviour
     public void HighlightBlocks()
     {
         ClearBlockHighlights();
-        Block db = InputManager.ins.draggedBlock;
-        if (db == null) return;
-
-        // Skip fake anchor children and copy the actual colored sprite asset.
-        foreach (Transform child in db.transform)
+        Block block = InputManager.ins != null ? InputManager.ins.draggedBlock : null;
+        Vector2Int origin;
+        Vector3 target;
+        if (!TryGetPlacement(block, out origin, out target)) return;
+        BlockTile[,] preview = (BlockTile[,])boardBlocks.Clone();
+        bool[] rows = new bool[BOARD_SIZE];
+        bool[] columns = new bool[BOARD_SIZE];
+        foreach (BlockTile tile in block.Tiles)
         {
-            if (child.name != "Block tile") continue;
-            SpriteRenderer renderer = child.GetComponent<SpriteRenderer>();
-            if (renderer != null && renderer.sprite != null)
-            {
-                previewSprite = renderer.sprite;
-                break;
-            }
+            SpriteRenderer renderer = tile.GetComponent<SpriteRenderer>();
+            if (renderer != null && renderer.sprite != null) { previewSprite = renderer.sprite; break; }
         }
         if (previewSprite == null) return;
-
-        Vector2Int c = db.GetFirstCoords();
-
-        for (int x = c.x; x < c.x + db.size.x; x++)
-            CheckVLine(x, true);
-        for (int y = c.y; y < c.y + db.size.y; y++)
-            CheckHLine(y, true);
+        for (int i = 0; i < block.Tiles.Length; i++)
+        {
+            Vector2Int cell = origin + block.TileCells[i];
+            preview[cell.x, cell.y] = block.Tiles[i];
+            rows[cell.y] = true;
+            columns[cell.x] = true;
+        }
+        for (int index = 0; index < BOARD_SIZE; index++)
+        {
+            if (rows[index])
+            {
+                bool full = true;
+                for (int x = 0; x < BOARD_SIZE; x++) if (preview[x, index] == null) full = false;
+                if (full) for (int x = 0; x < BOARD_SIZE; x++) PreviewBlock(preview[x, index]);
+            }
+            if (columns[index])
+            {
+                bool full = true;
+                for (int y = 0; y < BOARD_SIZE; y++) if (preview[index, y] == null) full = false;
+                if (full) for (int y = 0; y < BOARD_SIZE; y++) PreviewBlock(preview[index, y]);
+            }
+        }
     }
 
     private void Awake()
@@ -284,90 +335,25 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void CheckHLine(int y, bool h = false)
+    private void CheckHLine(int y)
     {
-        if (h)
-        {
-            BlockTile[,] b = new BlockTile[BOARD_SIZE, BOARD_SIZE];
-            Array.Copy(boardBlocks, b, boardBlocks.Length);
-
-            Block db = InputManager.ins.draggedBlock;
-            Vector2Int c = db.GetFirstCoords();
-            for (int i = 0; i < db.structure.Length; i++)
-            {
-                if (db.transform.GetChild(i).name == "Block tile")
-                {
-                    BlockTile bt = db.transform.GetChild(i).GetComponent<BlockTile>();
-                    b[c.x + db.structure[i].x, c.y + db.structure[i].y] = bt;
-                }
-            }
-            
-            for (int x = 0; x < BOARD_SIZE; x++)
-                if (!b[x, y]) return;
-            
-            // Include both existing board tiles and the dragged piece's tiles.
-            for (int x = 0; x < BOARD_SIZE; x++)
-                if (b[x, y])
-                    PreviewBlock(b[x, y]);
-        }
-        else
-        {
-            for (int x = 0; x < BOARD_SIZE; x++)
-                if (!boardBlocks[x, y]) return;
-
-            DestroyManager.ins.PrepareToDestroy(y, false);
-        }
+        if (y < 0 || y >= BOARD_SIZE) return;
+        for (int x = 0; x < BOARD_SIZE; x++) if (boardBlocks[x, y] == null) return;
+        DestroyManager.ins.PrepareToDestroy(y, false);
     }
 
-    private void CheckVLine(int x, bool h = false)
+    private void CheckVLine(int x)
     {
-        if (h)
-        {
-            BlockTile[,] b = new BlockTile[BOARD_SIZE, BOARD_SIZE];
-            Array.Copy(boardBlocks, b, boardBlocks.Length);
-
-            Block db = InputManager.ins.draggedBlock;
-            Vector2Int c = db.GetFirstCoords();
-            for (int i = 0; i < db.structure.Length; i++)
-            {
-                if (db.transform.GetChild(i).name == "Block tile")
-                {
-                    BlockTile bt = db.transform.GetChild(i).GetComponent<BlockTile>();
-                    b[c.x + db.structure[i].x, c.y + db.structure[i].y] = bt;
-                }
-            }
-
-            for (int y = 0; y < BOARD_SIZE; y++)
-                if (!b[x, y]) return;
-
-            // Include both existing board tiles and the dragged piece's tiles.
-            for (int y = 0; y < BOARD_SIZE; y++)
-                if (b[x, y])
-                    PreviewBlock(b[x, y]);
-        }
-        else
-        {
-            for (int y = 0; y < BOARD_SIZE; y++)
-                if (!boardBlocks[x, y]) return;
-
-            DestroyManager.ins.PrepareToDestroy(x, true);
-        }
+        if (x < 0 || x >= BOARD_SIZE) return;
+        for (int y = 0; y < BOARD_SIZE; y++) if (boardBlocks[x, y] == null) return;
+        DestroyManager.ins.PrepareToDestroy(x, true);
     }
 
     private bool CheckBlock(int i)
     {
         for (int y = 0; y < BOARD_SIZE; y++)
-        {
             for (int x = 0; x < BOARD_SIZE; x++)
-            {
-                Vector2 size = new Vector2(blocks[i].size.x - 1, blocks[i].size.y - 1);
-                Vector2 origin = new Vector2(x, y);
-                Vector2 end = origin + size;
-
-                if (IsInRange(origin, end) && IsEmpty(blocks[i], origin))
-                    return true;
-            }
-        }
+                if (CanPlace(blocks[i], new Vector2Int(x, y))) return true;
         return false;
     }
 }

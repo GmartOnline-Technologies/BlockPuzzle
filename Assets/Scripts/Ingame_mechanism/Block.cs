@@ -64,7 +64,7 @@ public void Move(float t, Vector3 d)
 }
     public bool IsMoving()
     {
-        return GetComponent<BlockMovingAnimation>().enabled;
+        return GetComponent<BlockMovingAnimation>().IsAnimating;
     }
 
     public void Scale(bool isDragged, float t)
@@ -86,22 +86,19 @@ public void Move(float t, Vector3 d)
 
     public bool IsScaling()
     {
-        return GetComponent<BlockScaleAnimation>().enabled;
-    }
-
-    public Vector2Int GetFirstCoords()
-    {
-        Vector3 p;
-        p = transform.GetChild(0).transform.position;
-        return new Vector2Int((int)(p.x + 0.5f), (int)(p.y + 0.5f));
+        return GetComponent<BlockScaleAnimation>().IsAnimating;
     }
 
     public Color GetColor()
     {
-        if (transform.GetChild(0).name == "Block tile")
-            return transform.GetChild(0).GetComponent<SpriteRenderer>().color;
-
-        return transform.GetChild(1).GetComponent<SpriteRenderer>().color;
+        if (Tiles != null)
+            foreach (BlockTile tile in Tiles)
+                if (tile != null)
+                {
+                    SpriteRenderer renderer = tile.GetComponent<SpriteRenderer>();
+                    if (renderer != null) return renderer.color;
+                }
+        return Color.white;
     }
 
    public void ChangeColor(Color c)
@@ -126,10 +123,100 @@ public void Move(float t, Vector3 d)
 
    private void Awake()
 {
+    if (!RebuildLayout())
+        Debug.LogError("Block tiles must occupy distinct cells one unit apart. Check this prefab's child positions.", this);
     // Grab the perfect fit scale from the board manager
     baseScale = BoardManager.ins.boardTileScale;
     
     // Initialize the block in the "Tray State" (with gaps)
     Scale(false, 0f); 
 }
+
+    public BlockTile[] Tiles { get; private set; }
+    public Vector2Int[] TileCells { get; private set; }
+    public Vector3 LocalGridOrigin { get; private set; }
+    public bool HasValidLayout { get; private set; }
+    public int QuarterTurns { get; private set; }
+
+    public static int RoundCell(float value)
+    {
+        return Mathf.FloorToInt(value + 0.5f);
+    }
+
+    public bool RebuildLayout()
+    {
+        HasValidLayout = false;
+        var tiles = new System.Collections.Generic.List<BlockTile>();
+        var childIndices = new System.Collections.Generic.List<int>();
+        Vector3 minimum = new Vector3(float.MaxValue, float.MaxValue, 0f);
+        Vector3 maximum = new Vector3(float.MinValue, float.MinValue, 0f);
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            if (child.name.Trim() != "Block tile") continue;
+            BlockTile tile = child.GetComponent<BlockTile>();
+            if (tile == null) return false;
+            // Normalize whitespace so existing effects recognize this real tile too.
+            child.name = "Block tile";
+            tiles.Add(tile);
+            childIndices.Add(i);
+            minimum.x = Mathf.Min(minimum.x, child.localPosition.x);
+            minimum.y = Mathf.Min(minimum.y, child.localPosition.y);
+            maximum.x = Mathf.Max(maximum.x, child.localPosition.x);
+            maximum.y = Mathf.Max(maximum.y, child.localPosition.y);
+        }
+        if (tiles.Count == 0) return false;
+        Tiles = tiles.ToArray();
+        TileCells = new Vector2Int[Tiles.Length];
+        structure = new Vector2Int[transform.childCount];
+        var occupied = new System.Collections.Generic.HashSet<Vector2Int>();
+        for (int i = 0; i < Tiles.Length; i++)
+        {
+            Vector3 offset = Tiles[i].transform.localPosition - minimum;
+            Vector2Int cell = new Vector2Int(RoundCell(offset.x), RoundCell(offset.y));
+            if (Mathf.Abs(offset.x - cell.x) > 0.01f || Mathf.Abs(offset.y - cell.y) > 0.01f
+                || !occupied.Add(cell)) return false;
+            TileCells[i] = cell;
+            structure[childIndices[i]] = cell;
+        }
+        LocalGridOrigin = minimum;
+        size = new Vector2(RoundCell(maximum.x - minimum.x) + 1, RoundCell(maximum.y - minimum.y) + 1);
+        HasValidLayout = true;
+        return true;
+    }
+
+    public Vector2Int GetFirstCoords()
+    {
+        Vector3 origin = transform.TransformPoint(LocalGridOrigin);
+        return new Vector2Int(RoundCell(origin.x), RoundCell(origin.y));
+    }
+
+    public Vector3 GetPlacementPosition(Vector2Int origin)
+    {
+        // Preserve the actual prefab pivot, including centered half-cell offsets.
+        return new Vector3(origin.x, origin.y, -1f) - transform.TransformVector(LocalGridOrigin);
+    }
+
+    public void Rotate90()
+    {
+        if (!HasValidLayout || !enabled) return;
+        GetComponent<BlockMovingAnimation>().Cancel();
+        Scale(false, 0f);
+        foreach (Transform child in transform)
+        {
+            if (child.name.Trim() != "Block tile" && child.name.Trim() != "Fake block tile") continue;
+            Vector3 p = child.localPosition;
+            // Rotate floats first: centered coordinates such as +/-0.5 stay distinct.
+            child.localPosition = new Vector3(p.y, -p.x, p.z);
+        }
+        QuarterTurns = (QuarterTurns + 1) % 4;
+        if (!RebuildLayout()) return;
+        BoxCollider collider = GetComponent<BoxCollider>();
+        if (collider != null)
+        {
+            collider.center = LocalGridOrigin + new Vector3((size.x - 1f) * 0.5f, (size.y - 1f) * 0.5f, 0f);
+            collider.size = new Vector3(size.x, size.y, collider.size.z);
+        }
+        SetBasePosition(posIndex, true);
+    }
 }

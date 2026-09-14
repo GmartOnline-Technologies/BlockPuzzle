@@ -1,242 +1,261 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class InputManager : MonoBehaviour
 {
     public static InputManager ins;
-
-    [HideInInspector]
-    public Vector3 lastPosition;
-    [HideInInspector]
-    public Block draggedBlock;
-
-    [Header("Placement shine")]
-    public BlockPlacementShine placementShine;
+    public enum PowerUpMode { None, Hammer, Rotator }
+    [Header("Power-Up States")] public PowerUpMode currentMode = PowerUpMode.None;
+    [HideInInspector] public Vector3 lastPosition;
+    [HideInInspector] public Block draggedBlock;
+    [Header("Placement shine")] public BlockPlacementShine placementShine;
 
     private ScreenOrientation screenOrientation;
-    private Vector3 startPos;
-    private Vector2Int lastPos = new Vector2Int(-1, -1);
+    private Vector3 grabbedLocalPoint;
+    private readonly Dictionary<SpriteRenderer, Color> highlighted = new Dictionary<SpriteRenderer, Color>();
+    private Vector2Int lastPos;
+    private bool hasPreview;
+    private bool canUndo;
+    private int undoPrefabIndex, undoPosIndex, undoQuarterTurns, undoSession;
+    private readonly List<Vector2Int> undoBoardCoords = new List<Vector2Int>();
+    private readonly List<BlockTile> undoTiles = new List<BlockTile>();
 
-    // Memory arrays restore the cell colors without causing NullReferenceExceptions
-    private SpriteRenderer[] highlightedTiles = new SpriteRenderer[9];
-    private Color[] highlightedColors = new Color[9]; 
-
-    public void ResetBlock()
+    private bool Busy()
     {
-        if (draggedBlock)
-        {
-            RemoveAllHighlights();
-            MoveDraggedBlock();
-            ResetDraggedBlock();
-        }
+        return BoardManager.ins == null || (DestroyManager.ins != null && DestroyManager.ins.IsClearing)
+            || (GameManager.ins != null && (GameManager.ins.paused || GameManager.ins.gameOver));
     }
 
     private void Awake()
     {
-        if (!ins) ins = this;
+        if (ins != null && ins != this) { enabled = false; return; }
+        ins = this;
+        screenOrientation = Screen.orientation;
+    }
+
+    public void ActivateHammer()
+    {
+        if (Busy()) return;
+        ResetBlock();
+        currentMode = currentMode == PowerUpMode.Hammer ? PowerUpMode.None : PowerUpMode.Hammer;
+    }
+
+    public void ActivateRotator()
+    {
+        if (Busy()) return;
+        ResetBlock();
+        currentMode = currentMode == PowerUpMode.Rotator ? PowerUpMode.None : PowerUpMode.Rotator;
+    }
+
+    public void TriggerUndo()
+    {
+        if (!canUndo || Busy() || draggedBlock != null || currentMode != PowerUpMode.None) return;
+        if (GameManager.ins != null && undoSession != GameManager.ins.ScoreSessionVersion) { canUndo = false; return; }
+        RemoveAllHighlights();
+        for (int i = 0; i < undoBoardCoords.Count; i++)
+        {
+            Vector2Int cell = undoBoardCoords[i];
+            if (BoardManager.ins.boardBlocks[cell.x, cell.y] != undoTiles[i]) continue;
+            if (undoTiles[i] != null) Destroy(undoTiles[i].gameObject);
+            BoardManager.ins.boardBlocks[cell.x, cell.y] = null;
+        }
+        Block restored = BoardManager.ins.SpawnBlock(undoPosIndex, undoPrefabIndex);
+        if (restored != null)
+            for (int i = 0; i < undoQuarterTurns; i++) restored.Rotate90();
+        BoardManager.ins.CheckSpace(false);
+        canUndo = false;
+    }
+
+    private bool PointerOnPlane(Vector3 screen, float z, out Vector3 world)
+    {
+        world = Vector3.zero;
+        if (Camera.main == null) return false;
+        Ray ray = Camera.main.ScreenPointToRay(screen);
+        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, z));
+        float distance;
+        if (!plane.Raycast(ray, out distance)) return false;
+        world = ray.GetPoint(distance);
+        return true;
     }
 
     private void Update()
     {
-        // Board occupancy stays reserved until the short clear animation ends.
-        if (DestroyManager.ins != null && DestroyManager.ins.IsClearing)
+        if (Busy()) { if (draggedBlock != null) ResetBlock(); return; }
+        if (screenOrientation != Screen.orientation)
         {
-            if (draggedBlock != null) ResetBlock();
+            ResetBlock();
+            screenOrientation = Screen.orientation;
             return;
         }
 
-        if (screenOrientation != Screen.orientation)
-            ResetBlock();
-
-        bool inputBegan = Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
-        bool inputMoved = Input.GetMouseButton(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved);
-        bool inputEnded = Input.GetMouseButtonUp(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended);
-
-        Vector3 inputPosition = Input.mousePosition;
-        if (Input.touchCount > 0) inputPosition = Input.GetTouch(0).position;
-
-        if (inputBegan)
+        Vector3 pointer = Input.mousePosition;
+        bool began, held, ended, canceled = false;
+        if (Input.touchCount > 0)
         {
-            Ray ray = Camera.main.ScreenPointToRay(inputPosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 15))
-            {
-                screenOrientation = Screen.orientation;
-                Collider c = hit.collider;
-                Block hitBlock = c.GetComponent<Block>();
-
-                if (c.tag == "Block" && hitBlock != null && hitBlock.movable && !hitBlock.IsMoving())
-                {
-                    RemoveAllHighlights();
-                    draggedBlock = hitBlock;
-                    draggedBlock.Scale(true, 0.2f);
-                    Color cl = draggedBlock.defaultColor; cl.a = 0.66f;
-                    draggedBlock.ChangeColor(cl);
-
-                    Vector3 p = draggedBlock.transform.position;
-                    startPos = Camera.main.ScreenToWorldPoint(inputPosition);
-                    startPos = new Vector3(startPos.x - p.x, startPos.y - p.y, 0);
-                }
-            }
+            Touch touch = Input.GetTouch(0);
+            pointer = touch.position;
+            began = touch.phase == TouchPhase.Began;
+            ended = touch.phase == TouchPhase.Ended;
+            canceled = touch.phase == TouchPhase.Canceled;
+            held = touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary;
         }
-        else if (inputMoved && draggedBlock)
+        else
         {
-            Vector3 pos = Camera.main.ScreenToWorldPoint(inputPosition);
-            pos = new Vector3(pos.x, pos.y, -2);
-            draggedBlock.transform.position = pos - startPos;
+            began = Input.GetMouseButtonDown(0);
+            held = Input.GetMouseButton(0);
+            ended = Input.GetMouseButtonUp(0);
+        }
+        if (canceled) { ResetBlock(); return; }
+        if (began) BeginPointer(pointer);
+        else if (draggedBlock != null && (held || ended))
+        {
+            // Sample the release position too, rather than using last frame's position.
+            if (!MoveToPointer(pointer)) { if (ended) ResetBlock(); return; }
+            if (ended) ReleaseBlock();
+            else UpdatePreview();
+        }
+    }
 
-            Vector3 size = draggedBlock.GetComponent<Block>().size;
-            size = new Vector3(size.x - 1, size.y - 1, 0);
-
-            Vector2 origin = draggedBlock.transform.GetChild(0).position;
-            Vector2 end = draggedBlock.transform.GetChild(0).position + size;
-
-            if (IsInRange(origin, end) && IsEmpty(draggedBlock, RoundVector2(origin)))
-            {
-                Vector2Int start = RoundVector2(origin);
-
-                if (lastPos != start)
-                {
-                    RemoveAllHighlights();
-                    BoardManager.ins.HighlightBlocks();
-
-                    for (int i = 0; i < draggedBlock.structure.Length; i++)
+    private void BeginPointer(Vector3 pointer)
+    {
+        if (draggedBlock != null || Camera.main == null) return;
+        RaycastHit hit;
+        if (!Physics.Raycast(Camera.main.ScreenPointToRay(pointer), out hit, 100f)) return;
+        Collider collider = hit.collider;
+        if (currentMode == PowerUpMode.Hammer)
+        {
+            BlockTile tile = collider.GetComponent<BlockTile>();
+            if (tile == null) return;
+            for (int x = 0; x < BoardManager.BOARD_SIZE; x++)
+                for (int y = 0; y < BoardManager.BOARD_SIZE; y++)
+                    if (BoardManager.ins.boardBlocks[x, y] == tile)
                     {
-                        if (draggedBlock.transform.GetChild(i).name == "Block tile")
-                        {
-                            Vector2Int coords = draggedBlock.structure[i];
-                            highlightedTiles[i] = BoardManager.ins.boardTiles[start.x + coords.x, start.y + coords.y];
-                            
-                            if (highlightedTiles[i] != null)
-                            {
-                                highlightedColors[i] = highlightedTiles[i].color;
-                                highlightedTiles[i].color = BoardManager.ins.highlightColor;
-                            }
-                        }
+                        tile.Destroy(0.2f);
+                        BoardManager.ins.boardBlocks[x, y] = null;
+                        canUndo = false;
+                        currentMode = PowerUpMode.None;
+                        BoardManager.ins.CheckSpace(false);
+                        return;
                     }
-                }
-                lastPos = start;
-            }
-            else
-            {
-                RemoveAllHighlights();
-                lastPos = new Vector2Int(-1, -1);
-            }
+            return;
         }
-        else if (inputEnded && draggedBlock)
+
+        Block block = collider.GetComponent<Block>();
+        if (block == null || !block.enabled || block.IsMoving() || !block.HasValidLayout) return;
+        bool inTray = false;
+        foreach (Block trayBlock in BoardManager.ins.blocks) if (trayBlock == block) inTray = true;
+        if (!inTray) return;
+        if (currentMode == PowerUpMode.Rotator)
         {
-            // Stop preview animations before changing opacity or clearing lines.
-            RemoveAllHighlights();
-            Vector3 size = draggedBlock.size;
-            size = new Vector3(size.x - 1, size.y - 1, 0);
-
-            Vector2 origin = draggedBlock.transform.GetChild(0).position;
-            Vector2 end = draggedBlock.transform.GetChild(0).position + size;
-            
-            if (IsInRange(origin, end) && IsEmpty(draggedBlock, RoundVector2(origin)))
-            {
-                lastPosition = BlockPosition(origin, size);
-                
-                draggedBlock.Move(0.08f, lastPosition);
-                draggedBlock.ChangeColor(draggedBlock.defaultColor);
-                draggedBlock.GetComponent<BoxCollider>().enabled = false;
-                draggedBlock.enabled = false;
-
-                Vector2Int start = RoundVector2(origin);
-
-                for (int i = 0; i < draggedBlock.structure.Length; i++)
-                {
-                    Vector2Int coords = draggedBlock.structure[i];
-                    if (draggedBlock.transform.GetChild(i).name == "Block tile")
-                    {
-                        BlockTile b = draggedBlock.transform.GetChild(i).GetComponent<BlockTile>();
-                        BoardManager.ins.boardBlocks[start.x + coords.x, start.y + coords.y] = b;
-                    }
-                }
-
-                if (placementShine == null)
-                {
-                    placementShine = GetComponent<BlockPlacementShine>();
-                    if (placementShine == null)
-                        placementShine = gameObject.AddComponent<BlockPlacementShine>();
-                }
-                placementShine.Play(draggedBlock);
-
-                BoardManager.ins.MoveBlocks(draggedBlock.posIndex);
-                BoardManager.ins.CheckBoard();
-            }
-            else
-            {
-                draggedBlock.Scale(false, 0.2f);
-                draggedBlock.Move(0.25f, draggedBlock.basePosition);
-                draggedBlock.ChangeColor(draggedBlock.defaultColor);
-            }
-
-            startPos = Vector3.zero;
-            draggedBlock = null;
-            RemoveAllHighlights();
+            block.Rotate90();
+            BoardManager.ins.CheckSpace(false);
+            currentMode = PowerUpMode.None;
+            return;
         }
+        if (!block.movable) return;
+        Vector3 worldGrab;
+        if (!PointerOnPlane(pointer, block.transform.position.z, out worldGrab)) return;
+        RemoveAllHighlights();
+        grabbedLocalPoint = block.transform.InverseTransformPoint(worldGrab);
+        grabbedLocalPoint.z = 0f;
+        draggedBlock = block;
+        // Use a stable full-size footprint for both preview and placement.
+        block.Scale(true, 0f);
+        Color color = block.defaultColor; color.a = 0.66f;
+        block.ChangeColor(color);
+        MoveToPointer(pointer);
+        UpdatePreview();
     }
 
-    private Vector2Int RoundVector2(Vector2 v)
+    private bool MoveToPointer(Vector3 pointer)
     {
-        return new Vector2Int((int)(v.x + 0.5f), (int)(v.y + 0.5f));
+        Vector3 world;
+        if (!PointerOnPlane(pointer, -2f, out world)) return false;
+        draggedBlock.transform.position = world - draggedBlock.transform.TransformVector(grabbedLocalPoint);
+        return true;
     }
 
-    private Vector3 BlockPosition(Vector2 o, Vector2 s)
+    private void UpdatePreview()
     {
-        Vector3 off = Vector3.zero;
-        if (s.x % 2 == 1) off.x = 0.5f;
-        if (s.y % 2 == 1) off.y = 0.5f;
-
-        return new Vector3((int)(o.x + 0.5f) + (int)(s.x / 2), (int)(o.y + 0.5f) + (int)(s.y / 2), -1) + off;
+        Vector2Int origin;
+        Vector3 target;
+        if (!BoardManager.ins.TryGetPlacement(draggedBlock, out origin, out target))
+        {
+            RemoveAllHighlights();
+            return;
+        }
+        if (hasPreview && origin == lastPos) return;
+        RemoveAllHighlights();
+        BoardManager.ins.HighlightBlocks();
+        foreach (Vector2Int offset in draggedBlock.TileCells)
+        {
+            Vector2Int cell = origin + offset;
+            SpriteRenderer renderer = BoardManager.ins.boardTiles[cell.x, cell.y];
+            if (renderer == null || highlighted.ContainsKey(renderer)) continue;
+            highlighted.Add(renderer, renderer.color);
+            renderer.color = BoardManager.ins.highlightColor;
+        }
+        lastPos = origin;
+        hasPreview = true;
     }
 
-    private bool IsInRange(Vector2 o, Vector2 e)
+    private void ReleaseBlock()
     {
-        return BoardManager.ins.IsInRange(o, e);
+        RemoveAllHighlights();
+        Vector2Int origin;
+        Vector3 target;
+        Block block = draggedBlock;
+        if (!BoardManager.ins.TryPlace(block, out origin, out target)) { ResetBlock(); return; }
+        canUndo = true;
+        undoPrefabIndex = block.prefabIndex;
+        undoPosIndex = block.posIndex;
+        undoQuarterTurns = block.QuarterTurns;
+        undoSession = GameManager.ins != null ? GameManager.ins.ScoreSessionVersion : 0;
+        undoBoardCoords.Clear();
+        undoTiles.Clear();
+        for (int i = 0; i < block.Tiles.Length; i++)
+        {
+            undoBoardCoords.Add(origin + block.TileCells[i]);
+            undoTiles.Add(block.Tiles[i]);
+        }
+        lastPosition = target;
+        block.Move(0.08f, target);
+        block.ChangeColor(block.defaultColor);
+        BoxCollider collider = block.GetComponent<BoxCollider>();
+        if (collider != null) collider.enabled = false;
+        block.enabled = false;
+        draggedBlock = null;
+        if (placementShine == null)
+        {
+            placementShine = GetComponent<BlockPlacementShine>();
+            if (placementShine == null) placementShine = gameObject.AddComponent<BlockPlacementShine>();
+        }
+        placementShine.Play(block);
+        BoardManager.ins.MoveBlocks(block.posIndex);
+        BoardManager.ins.CheckBoard();
+        if (DestroyManager.ins != null && DestroyManager.ins.destroyedLines > 0) canUndo = false;
     }
 
-    private bool IsEmpty(Block b, Vector2 o)
+    public void ResetBlock()
     {
-        return BoardManager.ins.IsEmpty(b, o);
+        RemoveAllHighlights();
+        if (draggedBlock == null) return;
+        draggedBlock.Scale(false, 0.2f);
+        draggedBlock.SetBasePosition(draggedBlock.posIndex, false);
+        draggedBlock.Move(0.25f, draggedBlock.basePosition);
+        draggedBlock.ChangeColor(draggedBlock.defaultColor);
+        draggedBlock = null;
     }
 
     private void RemoveAllHighlights()
     {
-        BoardManager.ins.ClearBlockHighlights();
-        lastPos = new Vector2Int(-1, -1);
-
-        if (highlightedTiles != null && highlightedColors != null)
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                if (highlightedTiles[i] != null)
-                {
-                    highlightedTiles[i].color = highlightedColors[i];
-                    highlightedTiles[i] = null;
-                }
-            }
-        }
-    }
-    
-    private void OnApplicationPause(bool isPaused)
-    {
-        if (isPaused)
-            ResetBlock();
-    }
-    
-    private void MoveDraggedBlock()
-    {
-        draggedBlock.Scale(false, 0.2f);
-        draggedBlock.Move(0.25f, draggedBlock.basePosition);
-        draggedBlock.ChangeColor(draggedBlock.defaultColor);
+        if (BoardManager.ins != null) BoardManager.ins.ClearBlockHighlights();
+        foreach (KeyValuePair<SpriteRenderer, Color> item in highlighted)
+            if (item.Key != null) item.Key.color = item.Value;
+        highlighted.Clear();
+        hasPreview = false;
     }
 
-    private void ResetDraggedBlock()
-    {
-        startPos = Vector3.zero;
-        draggedBlock = null;
-        RemoveAllHighlights();
-    }
+    private void OnApplicationPause(bool paused) { if (paused) ResetBlock(); }
+    private void OnDisable() { ResetBlock(); }
 }
