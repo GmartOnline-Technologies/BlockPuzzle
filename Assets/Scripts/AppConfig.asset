@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ea029810325b349a44338ce6d1683c, type: 3}
+  m_Name: AppConfig
+  m_EditorClassIdentifier: Assembly-CSharp::AppConfig
+  baseApiUrl: https://lk-subscription.apphubhost.xyz/api/
+  gameUserApiUrl: https://game-api.apphubhost.xyz/api/users/new
+  gameBaseAPIUrl: https://game-api.apphubhost.xyz
+  apiAuthToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfbmFtZSI6IlJlY292ZXJtZSIsImlkZWFtYXJ0X2FwcF9pZCI6IkFQUF8wNTk5NDMiLCJpZGVhbWFydF9hcHBfcGFzc3dvcmQiOiIxNDdjMTk1MDVkMTg1ZWJhZDY1ZTI4MGMzOWYwNGViNyIsIm1zcGFjZV9hcHBfaWQiOiJBUFBfMDA1NjE2IiwibXNwYWNlX2FwcF9wYXNzd29yZCI6IjE3OWIxZDI2ODc4N2I2OTA0ZjM3YTZjYzFkMTRhYzlkIiwiY3JlYXRlZF9hdCI6IjIwMjYtMDEtMjRUMDc6MTQ6MDQuMjE0WiIsImlhdCI6MTc2OTIzODg0NH0.fLr6FRpNoE0Mwj6N0vtsWqj3Am_Cjylxh_9wQYi8OlY
+  androidAppId: com.GmartOnline.BlockPuzzle
