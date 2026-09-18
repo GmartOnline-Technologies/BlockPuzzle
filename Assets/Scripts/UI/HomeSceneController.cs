@@ -3,7 +3,6 @@ using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -15,7 +14,6 @@ public class HomeSceneController : MonoBehaviour
     public SettingsManager settings;
     [Header("Balances (read-only display)")]
     public TMP_Text coinText, keyText;
-    public string coinPreferenceKey = "PlayerCoins";
     public string keyPreferenceKey = "PlayerKeys";
     [Header("First Play guide")]
     public RectTransform guideHand;
@@ -26,9 +24,12 @@ public class HomeSceneController : MonoBehaviour
     public TMP_Text statusText;
     [Min(0.1f)] public float minimumLoadingSeconds = 1.2f;
     public string gameSceneName = "GameScene";
-    [Header("Future integrations (optional)")]
-    public UnityEvent onLeaderboardRequested;
-    public UnityEvent onKeyStoreRequested;
+    [Header("Panel navigation")]
+    public GameObject homePanel;
+    public LeaderboardController leaderboard;
+    public GameObject shopPanel;
+    public Button shopBackButton;
+    private bool shopOpen;
     public bool IsTransitioning { get; private set; }
     private string guidePreferenceKey;
     private Tween guideTween;
@@ -42,6 +43,8 @@ public class HomeSceneController : MonoBehaviour
     private void Awake()
     {
         if (loadingPanel != null) loadingPanel.SetActive(false);
+        if (shopPanel != null) shopPanel.SetActive(false);
+        if (shopBackButton != null) shopBackButton.onClick.AddListener(CloseShop);
         guidePreferenceKey = "HomePlayGuideSeen_" + PlayerPrefs.GetInt("UserId", 0);
         if (guideHand != null)
         {
@@ -57,12 +60,13 @@ public class HomeSceneController : MonoBehaviour
         if (keyStoreButton != null) keyStoreButton.onClick.AddListener(OnKeyStoreClicked);
         if (addKeysButton != null) addKeysButton.onClick.AddListener(OnKeyStoreClicked);
     }
-    private void OnEnable() { RefreshBalances(); UpdateGuide(); }
+    private void OnEnable() { CoinWallet.Changed += OnCoinsChanged; RefreshBalances(); UpdateGuide(); }
+    private void OnCoinsChanged(int total) { RefreshBalances(); }
     public void RefreshBalances()
     {
-        SetBalances(PlayerPrefs.GetInt(coinPreferenceKey, 0), PlayerPrefs.GetInt(keyPreferenceKey, 0));
+        SetBalances(CoinWallet.Total, PlayerPrefs.GetInt(keyPreferenceKey, 0));
     }
-    // Optional hook for the future wallet/backend. This changes text, not stored balances.
+    // Display only: earning is handled by CoinWallet, not this method.
     public void SetBalances(int coins, int keys)
     {
         if (coinText != null) coinText.text = Mathf.Max(0, coins).ToString();
@@ -90,11 +94,36 @@ public class HomeSceneController : MonoBehaviour
         });
     }
     public void OnSettingsClicked()
-    { if (!IsTransitioning && settings != null) settings.OpenSettings(); }
+    { if (!IsTransitioning && !modalOpen && settings != null) settings.OpenSettings(); }
     public void OnLeaderboardClicked()
-    { if (!IsTransitioning && !modalOpen && onLeaderboardRequested != null) onLeaderboardRequested.Invoke(); }
+    {
+        if (IsTransitioning || modalOpen) return;
+        if (leaderboard == null || !leaderboard.isActiveAndEnabled)
+        { ShowError("Assign an active LeaderboardController to HomeSceneController."); return; }
+        leaderboard.Open();
+    }
     public void OnKeyStoreClicked()
-    { if (!IsTransitioning && !modalOpen && onKeyStoreRequested != null) onKeyStoreRequested.Invoke(); }
+    {
+        if (IsTransitioning || modalOpen) return;
+        if (homePanel == null || shopPanel == null || homePanel == shopPanel ||
+            shopPanel.transform.IsChildOf(homePanel.transform) ||
+            transform.IsChildOf(homePanel.transform))
+        { ShowError("Assign separate Home and Shop panels; keep HomeControllers outside Home Panel."); return; }
+        shopOpen = true;
+        SetModalOpen(true);
+        homePanel.SetActive(false);
+        shopPanel.SetActive(true);
+        shopPanel.transform.SetAsLastSibling();
+    }
+    public void CloseShop()
+    {
+        if (!shopOpen || IsTransitioning) return;
+        shopOpen = false;
+        if (shopPanel != null) shopPanel.SetActive(false);
+        if (homePanel != null) homePanel.SetActive(true);
+        SetModalOpen(false);
+        RefreshBalances();
+    }
 
     // Settings commits local logout/reset only after the destination has loaded successfully.
     public bool BeginTransition(string sceneName, Action commit = null)
@@ -155,6 +184,7 @@ public class HomeSceneController : MonoBehaviour
     }
     private void OnDisable()
     {
+        CoinWallet.Changed -= OnCoinsChanged;
         if (guideTween != null) guideTween.Kill();
         // Unity scene loads cannot be cancelled. Never strand an operation at 90%.
         if (pendingScene != null && !pendingScene.isDone)
@@ -162,6 +192,7 @@ public class HomeSceneController : MonoBehaviour
     }
     private void OnDestroy()
     {
+        if (shopBackButton != null) shopBackButton.onClick.RemoveListener(CloseShop);
         if (playButton != null) playButton.onClick.RemoveListener(OnPlayClicked);
         if (settingsButton != null) settingsButton.onClick.RemoveListener(OnSettingsClicked);
         if (leaderboardButton != null) leaderboardButton.onClick.RemoveListener(OnLeaderboardClicked);

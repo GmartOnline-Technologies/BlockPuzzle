@@ -27,6 +27,7 @@ public class BoardManager : MonoBehaviour
     public Sprite tutorialPurpleSprite;
     [Tooltip("Zero-based index of the 2 by 2 square in Block Prefabs.")]
     [Min(0)] public int tutorialSquarePrefabIndex;
+    public GameOverController gameOverUI;
 
     private Block tutorialPiece;
 
@@ -228,6 +229,9 @@ public class BoardManager : MonoBehaviour
                 blocks[i].ChangeColor(c);
             }
         }
+
+        if (gameOverUI != null)
+    gameOverUI.OnSpaceChecked(activeBlocks, blockedCount);
     }
 
     public void CheckBoard(bool onAwake = false)

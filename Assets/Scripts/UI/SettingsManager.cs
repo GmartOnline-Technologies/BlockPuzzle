@@ -55,29 +55,55 @@ public class SettingsManager : MonoBehaviour
         Bind(openTermsButton, OpenTerms); Bind(closeTermsButton, OpenSettings);
         if (languageDropdown != null) languageDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
+    
     private void Start() { RefreshFields(); }
+    
+    // --- UI POLISH: Intercept the Bind method to add animations to EVERY button ---
     private void Bind(Button button, UnityAction action)
     {
         if (button == null) return;
-        button.onClick.AddListener(action); boundButtons.Add(button); boundActions.Add(action);
+        
+        // Wrap the original action to include the bounce animation
+        UnityAction animatedAction = () => {
+            ButtonClickEffect(button);
+            action.Invoke();
+        };
+        
+        button.onClick.AddListener(animatedAction); 
+        boundButtons.Add(button); 
+        boundActions.Add(animatedAction); // Store the animated version so we can remove it on Destroy
     }
+
+    // --- UI POLISH: Universal Button Click Bounce ---
+    private void ButtonClickEffect(Button btn)
+    {
+        if (btn == null) return;
+        btn.transform.DOKill(true); // Stop any existing animations on this button
+        btn.transform.localScale = Vector3.one;
+        btn.transform.DOScale(0.85f, 0.1f).SetLoops(2, LoopType.Yoyo).SetUpdate(true);
+    }
+
     private void RefreshFields()
     {
         currentLanguageIndex = Mathf.Clamp(PlayerPrefs.GetInt("SelectedLanguage", 0), 0, 1);
         if (languageDropdown != null) languageDropdown.SetValueWithoutNotify(currentLanguageIndex);
         RefreshAudioIcons(); UpdateCoinDisplay();
     }
+    
     public void UpdateCoinDisplay()
     {
         if (home != null) home.RefreshBalances();
     }
+    
     private void RefreshAudioIcons()
     {
         if (soundIcon != null) soundIcon.sprite = PlayerPrefs.GetInt("GameSound", 1) == 1 ? soundOnSprite : soundOffSprite;
         if (musicIcon != null) musicIcon.sprite = PlayerPrefs.GetInt("GameMusic", 1) == 1 ? musicOnSprite : musicOffSprite;
     }
+    
     public void ToggleSound() { OnSoundToggled(PlayerPrefs.GetInt("GameSound", 1) == 0); }
     public void ToggleMusic() { OnMusicToggled(PlayerPrefs.GetInt("GameMusic", 1) == 0); }
+    
     public void OnSoundToggled(bool enabled)
     {
         if (Busy) return;
@@ -85,6 +111,7 @@ public class SettingsManager : MonoBehaviour
         else { PlayerPrefs.SetInt("GameSound", enabled ? 1 : 0); PlayerPrefs.Save(); Debug.LogWarning("Assign GameAudioSettings to apply sound changes.", this); }
         RefreshAudioIcons();
     }
+    
     public void OnMusicToggled(bool enabled)
     {
         if (Busy) return;
@@ -92,35 +119,47 @@ public class SettingsManager : MonoBehaviour
         else { PlayerPrefs.SetInt("GameMusic", enabled ? 1 : 0); PlayerPrefs.Save(); Debug.LogWarning("Assign GameAudioSettings to apply music changes.", this); }
         RefreshAudioIcons();
     }
+    
     public void OpenSettings()
     {
         if (Busy) return;
         RefreshFields(); Show(settingsPanel, View.Settings);
     }
+    
     public void OnBackClicked()
     {
         if (Busy) return;
         HideCards(); HideDimmer(); view = View.Closed;
         if (home != null) home.SetModalOpen(false);
     }
+    
     private void Show(GameObject card, View next)
     {
         if (Busy || card == null) return;
         HideCards();
         if (home != null) home.SetModalOpen(true);
         view = next;
+        
         // Activate first: configure the nested Canvas only after OnEnable has run.
         PopupMotion.Show(card);
         ShowDimmer(card);
+
+        // --- UI POLISH: Snappy Popup Appearance ---
+        card.transform.DOKill(true);
+        card.transform.localScale = Vector3.one * 0.7f; // Start slightly shrunk
+        card.transform.DOScale(1f, 0.35f).SetEase(Ease.OutBack).SetUpdate(true); // Pop to full size
     }
+    
     private void HideCards()
     {
         Active(settingsPanel, false); Active(logoutPopupPanel, false); Active(deactivatePopupPanel, false);
         Active(termsAndConditionsPanel, false);
     }
+    
     public void OpenLogout() { Show(logoutPopupPanel, View.Logout); }
     public void OpenDeactivate() { Show(deactivatePopupPanel, View.Deactivate); }
     public void OpenTerms() { Show(termsAndConditionsPanel, View.Terms); }
+    
     public void OnDropdownValueChanged(int index)
     {
         if (Busy || index < 0 || index > 1 || index == currentLanguageIndex) return;
@@ -134,19 +173,23 @@ public class SettingsManager : MonoBehaviour
         }
         if (languageDropdown != null) languageDropdown.SetValueWithoutNotify(currentLanguageIndex);
     }
+    
     public void OnConfirmLogout()
     {
         if (Busy || view != View.Logout || home == null) return;
         if (home.BeginTransition(bootstrapScene, () => ResetAccount(false))) { HideCards(); HideDimmer(); }
     }
+    
     public void OnConfirmDeactivate()
     {
         if (Busy || view != View.Deactivate || home == null) return;
         if (home.BeginTransition(tutorialScene, () => ResetAccount(true))) { HideCards(); HideDimmer(); }
     }
+    
     // Runtime UI layers preserve the boards' original Body parent and positions.
     private Image dimmer;
     private Tween dimTween;
+    
     private sealed class CardLayer
     {
         public Canvas canvas;
@@ -156,7 +199,9 @@ public class SettingsManager : MonoBehaviour
         public int previousOrder, previousLayer;
         public GraphicRaycaster addedRaycaster;
     }
+    
     private readonly Dictionary<GameObject, CardLayer> cardLayers = new Dictionary<GameObject, CardLayer>();
+    
     private void ShowDimmer(GameObject card)
     {
         Canvas parentCanvas = card.GetComponentInParent<Canvas>();
@@ -205,11 +250,13 @@ public class SettingsManager : MonoBehaviour
         if (!alreadyVisible) dimmer.color = Color.clear;
         dimTween = dimmer.DOColor(new Color(0f, 0f, 0f, backgroundDarkness), 0.2f).SetUpdate(true);
     }
+    
     private void HideDimmer()
     {
         if (dimTween != null) { dimTween.Kill(); dimTween = null; }
         if (dimmer != null) dimmer.gameObject.SetActive(false);
     }
+    
     private static void ResetAccount(bool deactivate)
     {
         if (deactivate)
@@ -235,12 +282,15 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetString("AuthMessage", deactivate ? "Account reset on this device." : "Successfully Logged Out.");
         PlayerPrefs.Save();
     }
+    
     private static void Active(GameObject target, bool active) { if (target != null) target.SetActive(active); }
+    
     private void OnDisable()
     {
         HideCards(); HideDimmer(); view = View.Closed;
         if (home != null) home.SetModalOpen(false);
     }
+    
     private void OnDestroy()
     {
         HideDimmer();

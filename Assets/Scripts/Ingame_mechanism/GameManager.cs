@@ -27,6 +27,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int bestScore;
     [HideInInspector] public int score = 0;
 
+    private bool UsesWallet => gameObject.scene.name == "GameScene" && CoinWallet.HasAccount;
+    private int DisplayTotal => UsesWallet ? CoinWallet.Total : score;
+    private void Start() { FinishScorePresentation(); }
+
     public static int GetLineReward(int lines)
     {
         if (lines <= 0) return 0;
@@ -51,13 +55,14 @@ public class GameManager : MonoBehaviour
 
         // The real total changes once. Presentation catches up when the reward lands.
         score += points;
+        if (UsesWallet) CoinWallet.AddEarned(points);
         if (score > bestScore)
         {
             bestScore = score;
             firstBeatenScore = false;
         }
 
-        int totalAfterClear = score;
+        int totalAfterClear = DisplayTotal;
         int session = ScoreSessionVersion;
         if (scoreFlyAnimation == null)
         {
@@ -94,8 +99,8 @@ public class GameManager : MonoBehaviour
     private void FinishScorePresentation()
     {
         if (scoreFlyAnimation != null) scoreFlyAnimation.CancelAll();
-        landedScoreTarget = score;
-        SetCounterImmediately(scoreText, score);
+        landedScoreTarget = DisplayTotal;
+        SetCounterImmediately(scoreText, DisplayTotal);
         SetCounterImmediately(bestScoreText, bestScore);
     }
 
@@ -229,6 +234,6 @@ public class GameManager : MonoBehaviour
         if (!ins) ins = this;
         Application.targetFrameRate = 60;
         bestScore = ProgressManager.GetBestScore();
-        landedScoreTarget = score;
+        landedScoreTarget = DisplayTotal;
     }
 }
