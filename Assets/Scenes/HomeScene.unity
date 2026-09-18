@@ -3596,8 +3596,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -997.08}
-  m_SizeDelta: {x: 0, y: -1994.2}
+  m_AnchoredPosition: {x: 0, y: -1020.2205}
+  m_SizeDelta: {x: 0, y: -2040.4812}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &530802065
 MonoBehaviour:
@@ -8264,10 +8264,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1270664465}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aef315405fd87af41ba51df18d3c425c, type: 3}
+  m_Script: {fileID: 11500000, guid: 396012de49c56424a8d4c35cc845f319, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KeyShopPanel
-  messageText: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::LeaderboardShopButton
+  home: {fileID: 1270664468}
+  leaderboard: {fileID: 1270664470}
 --- !u!1 &1281864721
 GameObject:
   m_ObjectHideFlags: 0
@@ -12051,7 +12052,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1787198197}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1270664471}
+        m_TargetAssemblyTypeName: LeaderboardShopButton, Assembly-CSharp
+        m_MethodName: OpenShop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1787198197
 MonoBehaviour:
   m_ObjectHideFlags: 0

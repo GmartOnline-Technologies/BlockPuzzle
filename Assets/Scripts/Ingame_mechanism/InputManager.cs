@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 public class InputManager : MonoBehaviour
 {
     public static InputManager ins;
+    public HelpPurchaseController helps;
     public enum PowerUpMode { None, Hammer, Rotator }
     [Header("Power-Up States")] public PowerUpMode currentMode = PowerUpMode.None;
     [HideInInspector] public Vector3 lastPosition;
@@ -22,7 +24,7 @@ public class InputManager : MonoBehaviour
 
     private bool Busy()
     {
-        return BoardManager.ins == null || (DestroyManager.ins != null && DestroyManager.ins.IsClearing)
+        return (helps != null && helps.IsOpen) || BoardManager.ins == null || (DestroyManager.ins != null && DestroyManager.ins.IsClearing)
             || (GameManager.ins != null && (GameManager.ins.paused || GameManager.ins.gameOver));
     }
 
@@ -36,6 +38,7 @@ public class InputManager : MonoBehaviour
     public void ActivateHammer()
     {
         if (Busy()) return;
+        if (currentMode != PowerUpMode.Hammer && (helps == null || !helps.RequireOwned(HelpPurchaseController.Kind.Hammer))) return;
         ResetBlock();
         currentMode = currentMode == PowerUpMode.Hammer ? PowerUpMode.None : PowerUpMode.Hammer;
     }
@@ -43,14 +46,19 @@ public class InputManager : MonoBehaviour
     public void ActivateRotator()
     {
         if (Busy()) return;
+        if (currentMode != PowerUpMode.Rotator && (helps == null || !helps.RequireOwned(HelpPurchaseController.Kind.Rotator))) return;
         ResetBlock();
         currentMode = currentMode == PowerUpMode.Rotator ? PowerUpMode.None : PowerUpMode.Rotator;
     }
 
     public void TriggerUndo()
     {
-        if (!canUndo || Busy() || draggedBlock != null || currentMode != PowerUpMode.None) return;
+        if (Busy()) return;
+        if (helps == null || !helps.RequireOwned(HelpPurchaseController.Kind.Undo)) return;
+        if (!canUndo || draggedBlock != null || currentMode != PowerUpMode.None) return;
         if (GameManager.ins != null && undoSession != GameManager.ins.ScoreSessionVersion) { canUndo = false; return; }
+        Block restored = BoardManager.ins.SpawnBlock(undoPosIndex, undoPrefabIndex);
+        if (restored == null) return;
         RemoveAllHighlights();
         for (int i = 0; i < undoBoardCoords.Count; i++)
         {
@@ -59,7 +67,7 @@ public class InputManager : MonoBehaviour
             if (undoTiles[i] != null) Destroy(undoTiles[i].gameObject);
             BoardManager.ins.boardBlocks[cell.x, cell.y] = null;
         }
-        Block restored = BoardManager.ins.SpawnBlock(undoPosIndex, undoPrefabIndex);
+        helps.Consume(HelpPurchaseController.Kind.Undo);
         if (restored != null)
             for (int i = 0; i < undoQuarterTurns; i++) restored.Rotate90();
         BoardManager.ins.CheckSpace(false);
@@ -119,6 +127,9 @@ public class InputManager : MonoBehaviour
     private void BeginPointer(Vector3 pointer)
     {
         if (draggedBlock != null || Camera.main == null) return;
+        if (EventSystem.current != null && (Input.touchCount > 0
+            ? EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)
+            : EventSystem.current.IsPointerOverGameObject())) return;
         RaycastHit hit;
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(pointer), out hit, 100f)) return;
         Collider collider = hit.collider;
@@ -130,6 +141,7 @@ public class InputManager : MonoBehaviour
                 for (int y = 0; y < BoardManager.BOARD_SIZE; y++)
                     if (BoardManager.ins.boardBlocks[x, y] == tile)
                     {
+                        if (helps == null || !helps.Consume(HelpPurchaseController.Kind.Hammer)) { currentMode = PowerUpMode.None; return; }
                         tile.Destroy(0.2f);
                         BoardManager.ins.boardBlocks[x, y] = null;
                         canUndo = false;
@@ -147,6 +159,7 @@ public class InputManager : MonoBehaviour
         if (!inTray) return;
         if (currentMode == PowerUpMode.Rotator)
         {
+            if (helps == null || !helps.Consume(HelpPurchaseController.Kind.Rotator)) { currentMode = PowerUpMode.None; return; }
             block.Rotate90();
             BoardManager.ins.CheckSpace(false);
             currentMode = PowerUpMode.None;
