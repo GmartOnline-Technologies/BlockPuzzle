@@ -70,6 +70,7 @@ public class InputManager : MonoBehaviour
         helps.Consume(HelpPurchaseController.Kind.Undo);
         if (restored != null)
             for (int i = 0; i < undoQuarterTurns; i++) restored.Rotate90();
+        BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.Undo);
         BoardManager.ins.CheckSpace(false);
         canUndo = false;
     }
@@ -143,6 +144,7 @@ public class InputManager : MonoBehaviour
                     {
                         if (helps == null || !helps.Consume(HelpPurchaseController.Kind.Hammer)) { currentMode = PowerUpMode.None; return; }
                         tile.Destroy(0.2f);
+                        BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.Hammer);
                         BoardManager.ins.boardBlocks[x, y] = null;
                         canUndo = false;
                         currentMode = PowerUpMode.None;
@@ -161,6 +163,7 @@ public class InputManager : MonoBehaviour
         {
             if (helps == null || !helps.Consume(HelpPurchaseController.Kind.Rotator)) { currentMode = PowerUpMode.None; return; }
             block.Rotate90();
+            BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.Rotate);
             BoardManager.ins.CheckSpace(false);
             currentMode = PowerUpMode.None;
             return;
@@ -218,7 +221,13 @@ public class InputManager : MonoBehaviour
         Vector2Int origin;
         Vector3 target;
         Block block = draggedBlock;
-        if (!BoardManager.ins.TryPlace(block, out origin, out target)) { ResetBlock(); return; }
+        if (!BoardManager.ins.TryPlace(block, out origin, out target))
+        {
+            BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.InvalidPlacement);
+            ResetBlock();
+            return;
+        }
+        BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.Place);
         canUndo = true;
         undoPrefabIndex = block.prefabIndex;
         undoPosIndex = block.posIndex;

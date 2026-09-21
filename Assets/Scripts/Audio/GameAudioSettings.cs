@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-// Use the same mixer asset in every scene. Does not create or play AudioSources.
+// Settings bridge: keeps existing preferences and supports the persistent audio player.
 public class GameAudioSettings : MonoBehaviour
 {
     public AudioMixer mixer;
@@ -23,8 +23,8 @@ public class GameAudioSettings : MonoBehaviour
     }
     public void Apply()
     {
-        if (mixer == null)
-        { Debug.LogWarning("Assign the game's AudioMixer to GameAudioSettings to apply sound/music toggles.", this); return; }
+        if (BlockPuzzleAudio.Instance != null) BlockPuzzleAudio.Instance.ApplySettings();
+        if (mixer == null) return;
         if (!mixer.SetFloat(soundParameter, SoundEnabled ? enabledSoundDb : -80f))
             Debug.LogWarning("Expose the Sound mixer group's volume as " + soundParameter, this);
         if (!mixer.SetFloat(musicParameter, MusicEnabled ? enabledMusicDb : -80f))

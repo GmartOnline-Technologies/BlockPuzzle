@@ -46,6 +46,7 @@ public class GameOverController : MonoBehaviour
         { Debug.LogError("Assign Game, Modal Root and Game Over Board.", this); return; }
         shown = true;
         game.SetGameOver();
+        BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.GameOver);
         int seconds = Mathf.Max(0, Mathf.FloorToInt(playedSeconds));
         if (playedTimeText != null)
             playedTimeText.text = (seconds / 60).ToString("00") + ":" + (seconds % 60).ToString("00");

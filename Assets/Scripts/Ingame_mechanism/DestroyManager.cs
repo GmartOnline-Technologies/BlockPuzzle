@@ -115,6 +115,10 @@ public class DestroyManager : MonoBehaviour
             
             if (playFeedback)
             {
+                // One sound per clear batch; silent when loading the board.
+                if (tiles.Count > 0)
+                    BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.LineClear);
+
                 // One shake at burst time, after the charge, for the entire clear.
                 CameraShake.ShakeMainCamera(count);
                 
