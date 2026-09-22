@@ -136,7 +136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &14282179
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1244,7 +1244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b79b5624d944058bd39aad2b90fb275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Purchasing.Codeless::UnityEngine.Purchasing.CodelessIAPButton
-  productId: com.gmartonline.blockpuzzle100keys
+  productId: com.gmartonline.blockpuzzle500keys
   buttonType: 0
   automaticallyConfirmTransaction: 1
   onProductFetched:
@@ -2549,6 +2549,7 @@ GameObject:
   - component: {fileID: 419910734}
   - component: {fileID: 419910736}
   - component: {fileID: 419910735}
+  - component: {fileID: 419910737}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2675,6 +2676,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419910733}
   m_CullTransparentMesh: 1
+--- !u!114 &419910737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419910733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Sound
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &433409587
 GameObject:
   m_ObjectHideFlags: 0
@@ -3316,7 +3333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b79b5624d944058bd39aad2b90fb275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Purchasing.Codeless::UnityEngine.Purchasing.CodelessIAPButton
-  productId: com.gmartonline.blockpuzzle100keys
+  productId: com.gmartonline.blockpuzzle1000keys
   buttonType: 0
   automaticallyConfirmTransaction: 1
   onProductFetched:
@@ -3526,7 +3543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b79b5624d944058bd39aad2b90fb275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Purchasing.Codeless::UnityEngine.Purchasing.CodelessIAPButton
-  productId: com.gmartonline.blockpuzzle100keys
+  productId: com.gmartonline.blockpuzzle1500keys
   buttonType: 0
   automaticallyConfirmTransaction: 1
   onProductFetched:
@@ -3871,6 +3888,7 @@ GameObject:
   - component: {fileID: 559809871}
   - component: {fileID: 559809873}
   - component: {fileID: 559809872}
+  - component: {fileID: 559809874}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3997,6 +4015,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559809870}
   m_CullTransparentMesh: 1
+--- !u!114 &559809874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559809870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Delete Account
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &569183726
 GameObject:
   m_ObjectHideFlags: 0
@@ -4014,7 +4048,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &569183727
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4914,7 +4948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b79b5624d944058bd39aad2b90fb275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Purchasing.Codeless::UnityEngine.Purchasing.CodelessIAPButton
-  productId: com.gmartonline.blockpuzzle100keys
+  productId: com.gmartonline.blockpuzzle250keys
   buttonType: 0
   automaticallyConfirmTransaction: 1
   onProductFetched:
@@ -4999,6 +5033,7 @@ GameObject:
   - component: {fileID: 750813704}
   - component: {fileID: 750813706}
   - component: {fileID: 750813705}
+  - component: {fileID: 750813707}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -5045,7 +5080,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Delete Account
+  m_text: Log Out ?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b638bd1c198c8ea4983501a8ac956af6, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
@@ -5125,6 +5160,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 750813703}
   m_CullTransparentMesh: 1
+--- !u!114 &750813707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750813703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Log Out ?
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &762675590
 GameObject:
   m_ObjectHideFlags: 0
@@ -5934,6 +5985,7 @@ GameObject:
   - component: {fileID: 976675532}
   - component: {fileID: 976675534}
   - component: {fileID: 976675533}
+  - component: {fileID: 976675535}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -6060,6 +6112,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 976675531}
   m_CullTransparentMesh: 1
+--- !u!114 &976675535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976675531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Do you want to delete account ?
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &993300013
 GameObject:
   m_ObjectHideFlags: 0
@@ -7161,6 +7229,7 @@ GameObject:
   - component: {fileID: 1144800784}
   - component: {fileID: 1144800786}
   - component: {fileID: 1144800785}
+  - component: {fileID: 1144800787}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -7287,6 +7356,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144800783}
   m_CullTransparentMesh: 1
+--- !u!114 &1144800787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144800783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Key Store
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &1150587597
 GameObject:
   m_ObjectHideFlags: 0
@@ -8334,9 +8419,9 @@ GameObject:
   - component: {fileID: 1270664469}
   - component: {fileID: 1270664468}
   - component: {fileID: 1270664467}
-  - component: {fileID: 1270664466}
   - component: {fileID: 1270664470}
   - component: {fileID: 1270664471}
+  - component: {fileID: 1270664472}
   m_Layer: 0
   m_Name: HomeControllers
   m_TagString: Untagged
@@ -8344,23 +8429,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1270664466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1270664465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75d1f5ea1c09c7241bbf4bfcc9025702, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameAudioSettings
-  mixer: {fileID: 0}
-  soundParameter: SoundVolume
-  musicParameter: MusicVolume
-  enabledSoundDb: 0
-  enabledMusicDb: 0
 --- !u!114 &1270664467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8374,7 +8442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsManager
   home: {fileID: 1270664468}
-  audioSettings: {fileID: 1270664466}
+  audioSettings: {fileID: 0}
   settingsPanel: {fileID: 1521101435}
   backgroundDarkness: 0.55
   backButton: {fileID: 148198443}
@@ -8490,6 +8558,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardShopButton
   home: {fileID: 1270664468}
   leaderboard: {fileID: 1270664470}
+--- !u!114 &1270664472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270664465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6179d0bb1e5f4842a6db4871ba249ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameAudioSettings
+  mixer: {fileID: 0}
+  soundParameter: SoundVolume
+  musicParameter: MusicVolume
+  enabledSoundDb: 0
+  enabledMusicDb: 0
 --- !u!1 &1281864721
 GameObject:
   m_ObjectHideFlags: 0
@@ -8576,6 +8661,7 @@ GameObject:
   - component: {fileID: 1293702278}
   - component: {fileID: 1293702280}
   - component: {fileID: 1293702279}
+  - component: {fileID: 1293702281}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8702,6 +8788,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1293702277}
   m_CullTransparentMesh: 1
+--- !u!114 &1293702281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293702277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Logout
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &1328807233
 GameObject:
   m_ObjectHideFlags: 0
@@ -9659,6 +9761,7 @@ GameObject:
   - component: {fileID: 1471472687}
   - component: {fileID: 1471472689}
   - component: {fileID: 1471472688}
+  - component: {fileID: 1471472690}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -9785,6 +9888,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1471472686}
   m_CullTransparentMesh: 1
+--- !u!114 &1471472690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471472686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Do you want to delete account ?
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &1493627769
 GameObject:
   m_ObjectHideFlags: 0
@@ -10045,7 +10164,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1521101436
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11248,6 +11367,7 @@ GameObject:
   - component: {fileID: 1694084399}
   - component: {fileID: 1694084401}
   - component: {fileID: 1694084400}
+  - component: {fileID: 1694084402}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -11374,6 +11494,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694084398}
   m_CullTransparentMesh: 1
+--- !u!114 &1694084402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694084398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Play
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &1694570187
 GameObject:
   m_ObjectHideFlags: 0
@@ -12269,6 +12405,7 @@ GameObject:
   - component: {fileID: 1787198198}
   - component: {fileID: 1787198197}
   - component: {fileID: 1787198196}
+  - component: {fileID: 1787198199}
   m_Layer: 5
   m_Name: addbtn
   m_TagString: Untagged
@@ -12389,6 +12526,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1787198194}
   m_CullTransparentMesh: 1
+--- !u!114 &1787198199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1787198194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93e57d5d7d924f74fac99a857d753ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
 --- !u!1 &1790419363
 GameObject:
   m_ObjectHideFlags: 0
@@ -12400,6 +12549,7 @@ GameObject:
   - component: {fileID: 1790419364}
   - component: {fileID: 1790419366}
   - component: {fileID: 1790419365}
+  - component: {fileID: 1790419367}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -12526,6 +12676,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1790419363}
   m_CullTransparentMesh: 1
+--- !u!114 &1790419367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790419363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Register
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
+  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &1797981025
 GameObject:
   m_ObjectHideFlags: 0
@@ -12537,6 +12703,7 @@ GameObject:
   - component: {fileID: 1797981026}
   - component: {fileID: 1797981028}
   - component: {fileID: 1797981027}
+  - component: {fileID: 1797981029}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -12663,6 +12830,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1797981025}
   m_CullTransparentMesh: 1
+--- !u!114 &1797981029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797981025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Music
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &1826188197
 GameObject:
   m_ObjectHideFlags: 0
@@ -14156,6 +14339,7 @@ GameObject:
   - component: {fileID: 2041363520}
   - component: {fileID: 2041363522}
   - component: {fileID: 2041363521}
+  - component: {fileID: 2041363523}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -14282,6 +14466,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041363519}
   m_CullTransparentMesh: 1
+--- !u!114 &2041363523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041363519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Settings
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &2047213953
 GameObject:
   m_ObjectHideFlags: 0
@@ -14872,7 +15072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b79b5624d944058bd39aad2b90fb275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Purchasing.Codeless::UnityEngine.Purchasing.CodelessIAPButton
-  productId: com.gmartonline.blockpuzzle100keys
+  productId: com.gmartonline.blockpuzzle50keys
   buttonType: 0
   automaticallyConfirmTransaction: 1
   onProductFetched:
@@ -19136,6 +19336,7 @@ GameObject:
   - component: {fileID: 6719810393468571957}
   - component: {fileID: 2472705250730687060}
   - component: {fileID: 8633531134254639294}
+  - component: {fileID: 8633531134254639295}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -21404,6 +21605,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8633531134254639295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5345293111227421357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Leaderboard
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!224 &8642677060387068986
 RectTransform:
   m_ObjectHideFlags: 0

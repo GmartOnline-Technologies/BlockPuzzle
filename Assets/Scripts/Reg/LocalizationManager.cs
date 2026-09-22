@@ -64,261 +64,193 @@ public class LocalizationManager : MonoBehaviour
     
         if (currentLanguage == Language.Sinhala)
         {
-            //--- FirstRound---
-            if (key == "fstrd") return "m<uq jgh";
-            if (key == "easy") return "f,aishs";
-            if (key == "normal") return "idudkHhs";
-            if (key == "hard") return "wudrehs";
-            if (key == "help") return "Woõ";
-            if (key == "grid") return "oe,";
-            if (key == "hammer") return "ñáh";
+            //---Welcome Back---
+            if (key == "Welcome Back !") return "wdmiq idorfhka ms<s.ksuq æ";
+            if (key == "Login to your account using your Name and Number") return "Tfí ku iy wxlh Ndú;fhka Tfí .sKqug msúfikak'";
+            if (key == "Don’t have an account") return ".sKqula fkdue;so@";
+            if (key == "Register") return ",shdmÈxÑ jkak";
 
-            //--- Collect Mobile Number---
-            if (key == "congratu") return "iqn me;=ï";
-            if (key == "enter name and mobile") return "Thdf.a kuhs f*daka kïn¾ tlhs fldgkak'";
-            if (key == "enter name") return "ku fldgkak";
-            if (key == "verify") return ";yjqre lrkak";
 
-             //--- OTP--
-            if (key == "enterotp") return "ryia wxlh fldgkak";
-            if (key == "ples enter otp") return "f*daka tlg tjmq ryia wxlh .ykak";
-            if (key == "didnt receive otp") return "fldaâ tl wdfõ keoao@";
-            if (key == "resendotp") return "wdfh f.kak .kak";
-            if (key == "resendavailable") return "0•59 lska wdfh;a f.kak .kak mq¿jka";
+            //---Subscription Details---
+            if (key == "Tutorial") return "f.aï tl .yk úÈy";
+            if (key == "Your Details") return "Thdf.a úia;r";
+            if (key == "Please fill your details to create game account") return ".sKqula yod.kak úia;r ál mqrjkak";
+            if (key == "Your Name") return "Thdf.a ku";
+            if (key == "Your Number") return "Thdf.a f*daka kïn¾ tl";
+            if (key == "Resend") return "kej; hjkak";
+            if (key == "Continue") return "È.gu hkak";
             
-            //--- Congrats--
-            if (key == "congrats") return "iqn me;=ï";
-           if (key == "congratsdescri") return ";rÕldÍ f.aï .ykak\" ,hsõ bfjkaÜia n,kak lshdmq ;ek'"; 
-           if (key == "start") return "mgka .kak";
-           
-            //--- Login--
-           if (key == "welcomeback") return "h,s;a idorfhka ms<s.kakjd";
-           if (key == "enteryournameandmobilenumtologin") return ".sKqug we;=,a fjkak Thdf.a kuhs f*daka kïn¾ tlhs fldgkak'";
-           if (key == "enteryournum") return "ÿrl:k wxlh we;=,;a lrkak";
-           if (key == "login") return "we;=,a fjkak";
-           
-            //--- Home--
-           if (key == "1daystrike") return "m<fjks ojfia iag%hsla tl";
-           if (key == "completedailystrike") return "ojfia iag%hsla tl iïmQ¾K lrkak";
-           if (key == "dailystrikecompleted") return "ojfia iag%hsla tl wjika";
+            //---Subscription OTP---
+            if (key == "Please enter OTP number we text to your number") return "f*daka tlg tjmq ryia wxlh ^OTP& fldgkak";
+            if (key == "OTP Number") return "ryia wxlh ^OTP&";
+            if (key == "Want to change number") return "f*daka kïn¾ tl udre lrkak ´fko@";
+            if (key == "Change number") return "kïn¾ tl udre lrkak";
 
-            //--- Calendar--
-           if (key == "calendar") return "le,ekavrh";
-           if (key == "thismonthprogress") return "fï udfia m%.;sh";
+            //---Welcome---
+            if (key == "Start") return "mgka .kak";
 
-            //---Completed--
-           if (key == "yousuccessfullycompleted..") return "Thd fâ,s iag%hsla tl id¾:lj bjr l<d";
-           if (key == "timespent") return ".shmq fj,dj";
-           if (key == "playagain") return "wdfh;a .yuq";
-           if (key == "cancel") return "tmd";
+            //---Home---
+            if (key == "Play") return ".yuq";
 
-            //---Game menu---
-           if (key == "resume") return "wdfh;a mgka .kak";
-           if (key == "restartlvl") return "uq, b|ka";
-           if (key == "home") return "m%Odk msgqjg";
+            //---Out of Space--
+            if (key == "Out of Space") return "bv uÈ æ";
+            if (key == "Played Time") return ".ymq fj,dj";
 
-            //---Quit---
-            if (key == "quittohome") return "f.aï tflka whska fjuqo@";
-            if (key == "doyoureallywanttoquit") return "we;a;gu f.aï tflka whska fjkak ´fko@";
-            if (key == "exit") return "whska fjkak";
+            //---BUY Hammer---
+            if (key == "BUY Hammer") return "ñáhla .kak";
+            if (key == "Hammer Count") return "ñá .dK";
 
-            //---Restart---
-            if (key == "restart") return "uq, b|ka huqo@";
-            if (key == "doyouwanttorestart") return "Thdg wdfh;a uq, b|ka mgka .kak ´fko@";
+            //---BUY ROTATORS---
+            if (key == "BUY ROTATORS") return "frdfÜg¾ia .kak";
+            if (key == "Rotator Count") return "frdfÜg¾ia .dK";
 
-            //---Level Completed---
-            if (key == "lvlcompleted") return "f,j,a tl bjrhs";
-            if (key == "nextlvl") return "B<. f,j,a tl";
-            
-            //---Out of lives---
-            if (key == "outoflives") return ",hs*a bjrhs";
-            if (key == "buy") return "ñ,§ .kak";
-            if (key == "insufficientpoints") return "fmdhskaÜia uÈ";
-            if (key == "outoflivesdesc") return "l%Svdj kej; wdrïN lrkak fyda uq,a msgqjg hkak¡";
+            //---BUY UNDOS---
+            if (key == "BUY UNDOS") return "UNDO .kak";
+            if (key == "Undo Counts") return "UNDO .dK";
+            if (key == "Insufficient Keys") return "Keys uÈ";
 
-            //---Coin Store---
-            if (key == "coinstore") return "fldhskaia fIdma tl";
-
-            //---Buy---
-            if (key == "150coinpack") return "150 mela tl";
-            if (key == "wouldyouliketopurchase") return "Thdg fï fldhska meflaÊ tl .kak ´fko @";
-
-            //---Success---
-            if (key == "purchasesuccess") return "id¾:lj ñ,§ .;a;d";
-            if (key == "collect") return "tl;= lr.kak";
-
-            //---Payment Declined---
-            if (key == "paymentdeclined") return "f.ùu m%;slafIam jqKd";
-            if (key == "paymentdeclineddescription") return "f.ùfï§ fudlla yß .egÆjla wdjd' wdfh;a g%hs lr,d n,kak";
-            if(key == "done") return "yß";
+            //---Menu---
+            if (key == "Menu") return "fukqj";
+            if (key == "Restart") return "uq, b|ka";
+            if (key == "Settings") return "ieliqï";
 
             //---Settings---
-            if (key == "settings") return "ieliqï";
-            if (key == "yourname") return "Thdf.a ku";
-            if (key == "mobilenum") return "ÿrl:k wxlh";
-            if (key == "gamesound") return "f.aï tfla ioafoa";
-            if (key == "language") return "NdIdj";
-            if (key == "logout") return "whska fjkak";
-            if (key == "deactivateacc") return ".sKqu wl%sh lrkak";   
+            if (key == "Sound") return "f.aï tfla ioafoa";
+            if (key == "Music") return "ix.S;h";
+            if (key == "Language") return "NdIdj";
+            if (key == "Please select your language to continue. You can change later") return "bÈßhg hdu i|yd lreKdlr Tfí NdIdj f;darkak' Tng miqj th fjkia l< yel'";
+            if (key == "Logout") return "whska fjkak";
+            if (key == "Delete Account") return ".sKqu whska lrkak";
+
+            //---Quit ?---
+            if (key == "Quit ?") return "whska fjuqo @";
+            if (key == "Do you really want to quit?") return "we;a;gu f.aï tflka whska fjkak ´fko@";
+            if (key == "Quit") return "whska fjuqo";
+
+            //---RESTART ?---
+            if (key == "RESTART ?") return "uq, b|ka huqo @";
+            if (key == "Do you want to restart the game ?") return "Thdg wdfh;a uq, b|ka mgka .kak ´fko@";
+
+            //---Leaderboard---
+            if (key == "Leaderboard") return "olaIhskaf.a ,ehsia;=j";
+
+            //---Key Store---
+            if (key == "Key Store") return "h;=re fIdma tl";
+
+            //---Delete account---
+            if (key == "Delete account") return ".sKqu whska lrkak";
+            if (key == "Do you want to delete account ?") return "Thdg úYajdio @ Thdf.a o;a; Tlafldu uelS,d hhs'";
 
             //---Logout---
-            if (key == "logout?") return "whska fjuqo@";
-            if (key == "logoutdesc") return "Thdg .sKqfuka whska fjkak ´fko@ f*daka kïn¾ tflka f,aisfhkau wdfh;a f,d.a fjkak mq¿jka";
+            if (key == "Log Out ?") return "whska fjuqo@";
+            if (key == "Do you want to logout ?") return "Thdg .sKqfuka whska fjkak ´fko@";
 
-            //---Deactivate Account---
-            if (key == "deactivateacc") return ".sKqu wl%sh lrkak";
-            if (key == "deactivateaccdesc") return "úYajdio @ Thdf.a o;a; Tlafldu uelS,d hhs'";
-            if (key == "deactivate") return "wl%sh lrkak";
+            //---Update---
+            if (key == "Update Available") return "wmafâÜ tlla weú,a,d";
+            if (key == "New update available. Update Block Puzzle now") return "w¨‍;a wmafâÜ tlla weú,a,d' f.aï tl oekau wmafâÜ lr.kak'";
+            if (key == "Update now") return "oekau wmafâÜ lrkak";
 
-            //---Change Language---
-            if (key == "doyouwanttochangethegamelanguageintosinhala") return "Thdg f.aï tfla NdIdj isxy, j,g udre lrkak ´fko @";
-            if (key == "yeschange") return "Tõ udre lrkak";
+            //---Connection lost !---
+            if (key == "Connection Lost ! Please check your connection and try again.") return "bkag¾fkÜ lfklaIka tfla .eg¨‍jla' lreKdlr mßlaId lr,d wdfh;a g%hs lrkak'";
+            if (key == "try again") return "wdfh;a g%hs lrkak";
+            if (key == "Connection Lost") return "iïnkaO;djh ì| jegq‚";
 
-            //---Update ---
-            if (key == "updateavailable") return "wmafâÜ tlla weú,a,d";
-            if (key == "newupdateavailable") return "wÆ;a wmafâÜ tlla weú,a,d' f.aï tl oekau wmafâÜ lr.kak'";
-            if (key == "updatenow") return "oekau wmafâÜ lrkak";
-
-            //---Connection Lost ---
-            if (key == "connectionlostdesc") return "bkag¾fkÜ lfklaIka tfla .egÆjla' lreKdlr mßlaId lr,d wdfh;a g%hs lrkak'";
-            if (key == "tryagain") return "wdfh;a g%hs lrkak";  
-
-            //---Helps ---
-            if (key == "outofhelps") return "Woõ wjika";
-            if (key == "helpoutofhelpsdesc") return "Woõ ñ,§ .kak fyda l%Svdj È.gu lrf.k hkak'";
-
-            //---Hammers ---
-            if (key == "outofhammers") return "ñá wjika";
-            if (key == "hammersoutofdesc") return "ñá ñ,§ .kak fyda l%Svdj È.gu lrf.k hkak'";
 
         }
         
         // --- DEFAULT ENGLISH KEYS ---
 
-        //--- FirstRound---
-            if (key == "fstrd") return "First Round ";
-            if (key == "easy") return "Easy";
-            if (key == "normal") return "Normal";
-            if (key == "hard") return "Hard";
-            if (key == "help") return "Help";
-            if (key == "grid") return "Grid";
-            if (key == "hammer") return "Hammer";
+        //---Welcome Back---
+            if (key == "Welcome Back !") return "Welcome Back !";
+            if (key == "Login to your account using your Name and Number") return "Login to your account using your Name and Number";
+            if (key == "Don’t have an account") return "Don’t have an account";
+            if (key == "Register") return "Register";
 
-            //--- Collect Mobile Number---
-            if (key == "congratu") return "CONGRATULATIONS !";
-            if (key == "enter name and mobile") return "Enter your name and mobile number.";
-            if (key == "enter name") return "Enter name";
-            if (key == "verify") return "Verify";
 
-             //--- OTP--
-            if (key == "enterotp") return "Enter OTP !";
-            if (key == "ples enter otp") return "Please enter OTP we text to your number";
-            if (key == "didnt receive otp") return "Didn't receive code?";
-            if (key == "resendotp") return "Resend OTP";
-            if (key == "resendavailable") return "Resend available in 0:59";
+            //---Subscription Details---
+            if (key == "Tutorial") return "Tutorial";
+            if (key == "Your Details") return "Your Details";
+            if (key == "Please fill your details to create game account") return "Please fill your details to create game account";
+            if (key == "Your Name") return "Your Name";
+            if (key == "Your Number") return "Your Number";
+            if (key == "Resend") return "Resend";
+            if (key == "Continue") return "Continue";
             
-            //--- Congrats--
-           if (key == "congratsdescri") return "Your ultimate destination for competitive gaming, live events, and unforgettable experiences."; 
-           if (key == "start") return "START";
-           
-            //--- Login--
-           if (key == "welcomeback") return "Welcome back !";
-           if (key == "enteryournameandmobilenumtologin") return "Enter your name and mobile number to login to your account.";
-           if (key == "enteryournum") return "Enter your Number";
-           if (key == "login") return "Login";
-           
-            //--- Home--
-           if (key == "1daystrike") return "1St Day strike";
-           if (key == "completedailystrike") return "Complete your daily strike";
-           if (key == "dailystrikecompleted") return "Daily Strike Completed";
+            //---Subscription OTP---
+            if (key == "Please enter OTP number we text to your number") return "Please enter OTP number we text to your number";
+            if (key == "OTP Number") return "OTP Number";
+            if (key == "Want to change number") return "Want to change number";
+            if (key == "Change number") return "Change number";
 
-            //--- Calendar--
-           if (key == "calendar") return "Calendar";
-           if (key == "thismonthprogress") return "This month's progress";
+            //---Welcome---
+            if (key == "Start") return "Start";
 
-            //---Completed--
-           if (key == "yousuccessfullycompleted..") return "You successfully completed daily strike on";
-           if (key == "timespent") return "Time spent";
-           if (key == "playagain") return "PLay Again";
-           if (key == "cancel") return "Cancel";
+            //---Home---
+            if (key == "Play") return "Play";
 
-            //---Game menu---
-           if (key == "resume") return "Resume";
-           if (key == "restartlvl") return "Restart Level";
-           if (key == "home") return "Home";
+            //---Out of Space--
+            if (key == "Out of Space") return "Out of Space";
+            if (key == "Played Time") return "Played Time";
 
-            //---Quit---
-            if (key == "quittohome") return "QUIT to Home ?";
-            if (key == "doyoureallywanttoquit") return "Do you really want to quit?";
-            if (key == "exit") return "Exit";
+            //---BUY Hammer---
+            if (key == "BUY Hammer") return "BUY Hammer";
+            if (key == "Hammer Count") return "Hammer Count";
 
-            //---Restart---
-            if (key == "restart") return "Restart";
-            if (key == "doyouwanttorestart") return "Do you want to restart the game ?";
+            //---BUY ROTATORS---
+            if (key == "BUY ROTATORS") return "BUY ROTATORS";
+            if (key == "Rotator Count") return "Rotator Count";
 
-            //---Level Completed---
-            if (key == "lvlcompleted") return "Level COMPLETED !";
-            if (key == "nextlvl") return "NEXT LEVEL";
-            
-            //---Out of lives---
-            if (key == "outoflives") return "Out of Lives !";
-            if (key == "buy") return "Buy";
-            if (key == "insufficientpoints") return "Insufficient Points";
+            //---BUY UNDOS---
+            if (key == "BUY UNDOS") return "BUY UNDOS";
+            if (key == "Undo Counts") return "Undo Counts";
+            if (key == "Insufficient Keys") return "Insufficient Keys";
 
-            //---Coin Store---
-            if (key == "coinstore") return "Coin Store";
-
-            //---Buy---
-            if (key == "150coinpack") return "150 Coin Pack";
-            if (key == "wouldyouliketopurchase") return "Would you like to purchase this coin package ?";
-
-            //---Success---
-            if (key == "purchasesuccess") return "Purchase Success !";
-            if (key == "collect") return "Collect";
-
-            //---Payment Declined---
-            if (key == "paymentdeclined") return "Payment Declined";
-            if (key == "paymentdeclineddescription") return "Something went wrong with the payment. Please try again";
-             if(key == "done") return "Done";
+            //---Menu---
+            if (key == "Menu") return "Menu";
+            if (key == "Restart") return "Restart";
+            if (key == "Settings") return "Settings";
 
             //---Settings---
-            if (key == "settings") return "Settings";
-            if (key == "yourname") return "Your Name";
-            if (key == "mobilenum") return "Mobile Number";
-            if (key == "gamesound") return "Game Sound";
-            if (key == "language") return "Language";
-            if (key == "logout") return "Logout";
-            if (key == "deactivateacc") return "Deactivate Account";   
+            if (key == "Sound") return "Sound";
+            if (key == "Music") return "Music";
+            if (key == "Language") return "Language";
+            if (key == "Please select your language to continue. You can change later") return "Please select your language to continue. You can change later";
+            if (key == "Logout") return "Logout";
+            if (key == "Delete Account") return "Delete Account";
+
+            //---Quit ?---
+            if (key == "Quit ?") return "Quit ?";
+            if (key == "Do you really want to quit?") return "Do you really want to quit?";
+            if (key == "Quit") return "Quit";
+
+            //---RESTART ?---
+            if (key == "RESTART ?") return "RESTART ?";
+            if (key == "Do you want to restart the game ?") return "Do you want to restart the game ?";
+
+            //---Leaderboard---
+            if (key == "Leaderboard") return "Leaderboard";
+
+            //---Key Store---
+            if (key == "Key Store") return "Key Store";
+
+            //---Delete account---
+            if (key == "Delete account") return "Delete account";
+            if (key == "Do you want to delete account ?") return "Do you want to delete account ?";
 
             //---Logout---
-            if (key == "logout?") return "Logout?";
-            if (key == "logoutdesc") return "Are you sure you want to logout?";    
+            if (key == "Log Out ?") return "Log Out ?";
+            if (key == "Do you want to logout ?") return "Do you want to logout ?";
 
-            //---Deactivate Account---
-            if (key == "deactivateacc") return "DEACTIVATE ACCOUNT";
-            if (key == "deactivateaccdesc") return "Are you sure to deactivate your account ? Your data will be removed";
-            if (key == "deactivate") return "DEACTIVATE";
+            //---Update---
+            if (key == "Update Available") return "Update Available";
+            if (key == "New update available. Update Block Puzzle now") return "New update available. Update Block Puzzle now";
+            if (key == "Update now") return "Update now";
 
-            //---Change Language---
-            if (key == "doyouwanttochangethegamelanguageintosinhala") return "Do you want to change the game language in to Sinhala ?";
-            if (key == "yeschange") return "Yes. Change";
-
-            //---Update ---
-            if (key == "updateavailable") return "Update Available";
-            if (key == "newupdateavailable") return "New update available. Update Arrow Arena now";
-            if (key == "updatenow") return "Update Now";
-
-            //---Connection Lost ---
-            if (key == "connectionlostdesc") return "Connection Lost ! Please check your connection and try again.";
-            if (key == "tryagain") return "try again";  
-
-             //---Helps ---
-            if (key == "outofhelps") return "OUT OF HELPS !";
-            if (key == "helpoutofhelpsdesc") return "Buy helps or continue the game.";
-
-            //---Hammers ---
-            if (key == "outofhammers") return "OUT OF HAMMERS !";
-            if (key == "hammersoutofdesc") return "Buy hammers or continue the game.";
+            //---Connection lost !---
+            if (key == "Connection Lost ! Please check your connection and try again.") return "Connection Lost ! Please check your connection and try again.";
+            if (key == "try again") return "try again";
+            if (key == "Connection Lost") return "Connection Lost";
+            
         
         return key;
     }

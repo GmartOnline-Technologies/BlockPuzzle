@@ -6,6 +6,7 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager ins;
     public HelpPurchaseController helps;
+    public HammerHitEffect hammerEffect;
     public enum PowerUpMode { None, Hammer, Rotator }
     [Header("Power-Up States")] public PowerUpMode currentMode = PowerUpMode.None;
     [HideInInspector] public Vector3 lastPosition;
@@ -24,7 +25,7 @@ public class InputManager : MonoBehaviour
 
     private bool Busy()
     {
-        return (helps != null && helps.IsOpen) || BoardManager.ins == null || (DestroyManager.ins != null && DestroyManager.ins.IsClearing)
+        return (hammerEffect != null && hammerEffect.IsPlaying) || (helps != null && helps.IsOpen) || BoardManager.ins == null || (DestroyManager.ins != null && DestroyManager.ins.IsClearing)
             || (GameManager.ins != null && (GameManager.ins.paused || GameManager.ins.gameOver));
     }
 
@@ -32,6 +33,8 @@ public class InputManager : MonoBehaviour
     {
         if (ins != null && ins != this) { enabled = false; return; }
         ins = this;
+        if (hammerEffect == null) hammerEffect = GetComponent<HammerHitEffect>();
+        if (hammerEffect == null) hammerEffect = gameObject.AddComponent<HammerHitEffect>();
         screenOrientation = Screen.orientation;
     }
 
@@ -143,12 +146,17 @@ public class InputManager : MonoBehaviour
                     if (BoardManager.ins.boardBlocks[x, y] == tile)
                     {
                         if (helps == null || !helps.Consume(HelpPurchaseController.Kind.Hammer)) { currentMode = PowerUpMode.None; return; }
-                        tile.Destroy(0.2f);
-                        BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.Hammer);
-                        BoardManager.ins.boardBlocks[x, y] = null;
                         canUndo = false;
                         currentMode = PowerUpMode.None;
-                        BoardManager.ins.CheckSpace(false);
+                        if (hammerEffect != null && hammerEffect.isActiveAndEnabled)
+                            hammerEffect.Strike(tile, x, y);
+                        else
+                        {
+                            tile.Destroy(0.2f);
+                            BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.Hammer);
+                            BoardManager.ins.boardBlocks[x, y] = null;
+                            BoardManager.ins.CheckSpace(false);
+                        }
                         return;
                     }
             return;

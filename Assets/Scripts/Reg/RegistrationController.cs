@@ -1,295 +1,538 @@
-using System;
-using System.Collections;
-using System.Text;
-using System.Text.RegularExpressions;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
+using DG.Tweening;
+using UnityEngine.Networking;
+using System.Text;
+using System.Collections;
+using System;
+using UnityEngine.SceneManagement;
 
-// Scene-local: place on an always-active object, outside all managed panels.
 public class RegistrationController : MonoBehaviour
 {
     public static RegistrationController Instance;
+
+    [Header("API Config")]
     public AppConfig config;
-    [Tooltip("Exact backend appName. The instructor used busArena; confirm the value for your game.")]
-    public string gameAppName = "busArena";
+
     [Header("Panels")]
-    public GameObject registrationPanel;
-    public GameObject loginPanel, detailsPanel, otpPanel, welcomePanel, loadingOverlay;
-    [Header("Login")]
-    public TMP_InputField loginNameInput, loginPhoneInput;
-    public Button loginButton;
-    public TextMeshProUGUI loginWarningText;
-    [Header("Details")]
-    public TMP_InputField usernameInput, phoneInput;
+    [Tooltip("In Bootstrap: Assign Login_panel. In Tutorial: Assign user_de.")]
+    public GameObject detailsPanel;       
+    public GameObject otpPanel;
+    public GameObject welcomePanel;
+    public GameObject loadingOverlay;
+
+    [Header("Inputs & Buttons")]
+    public TMP_InputField usernameInput;
+    public TMP_InputField phoneInput;
     public Button sendOtpButton;
-    public TextMeshProUGUI detailsWarningText, subInfoText;
-    [Header("OTP: assign one input OR six boxes")]
+    public TextMeshProUGUI detailsWarningText;
+    public TextMeshProUGUI subInfoText;
+
+    [Header("OTP Inputs")]
     public TMP_InputField singleOtpInput;
-    public OtpDigitInputs otpDigits;
-    public Button verifyOtpButton, resendOtpButton, changeNumberButton;
-    public TextMeshProUGUI otpMessageText;
-    [Header("Events")]
-    public UnityEvent onAuthenticated;
-    public bool IsBusy { get; private set; }
-    public bool IsAuthenticated { get; private set; }
-    private bool loginMode, subscriptionVerified;
-    private string mobile, playerName, referenceNo, subscriptionId;
-    private float resendAt;
-    private UnityWebRequest activeRequest;
+    public Button verifyOtpButton;
+    public Button resendOtpButton;
+    public TextMeshProUGUI otpMessageText; 
 
+    // Internal State
+    private string currentMobile10Digit;
+    private string tempUsername;
+    private string referenceNo; 
+    private string subscriptionId; 
+
+    private float lastBackPressTime = 0f;
+    private const float exitDoubleTapDelay = 2.0f;
+
+    // --- JSON CLASSES ---
     [Serializable] private class OtpRequest { public string tel; }
-    [Serializable] private class OtpResponse { public string statusCode, referenceNo, statusDetail; }
-    [Serializable] private class VerifyRequest { public string referenceNo, otp; }
-    [Serializable] private class VerifyResponse { public string statusCode, subscriptionId, statusDetail; }
-    [Serializable] private class UserRequest
-    {
-        public string username, phoneNumber, countryCode, country, platformName, email, appName;
-    }
-    [Serializable] private class UserResponse { public UserData user; }
-    [Serializable] private class UserData { public int id; public string username, authToken; }
+    [Serializable] private class OtpResponse { public string statusCode; public string referenceNo; public string statusDetail; }
+    [Serializable] private class VerifyRequest { public string referenceNo; public string otp; }
+    [Serializable] private class VerifyResponse { public string statusCode; public string subscriptionId; public string statusDetail; }
+    [Serializable] public class UserRegisterRequest { public string username; public string phoneNumber; public string countryCode; public string country; public string platformName; public string email; public string appName; }
+    [Serializable] public class UserRegisterResponse { public UserData user; }
+    [Serializable] public class UserData { public int id; public string username; public string authToken; }
+    // -----------------------------------------------------------
 
-    private void Awake()
+    void Awake() 
+    { 
+        Instance = this; 
+        if(detailsPanel != null) detailsPanel.SetActive(false);
+        if(otpPanel != null) otpPanel.SetActive(false);
+        if(welcomePanel != null) welcomePanel.SetActive(false);
+        if(loadingOverlay != null) loadingOverlay.SetActive(false);
+        
+        if(detailsWarningText != null) detailsWarningText.text = "";
+    }
+
+    void Start()
     {
-        Instance = this;
-        HidePanels();
-        SetActive(loadingOverlay, false);
-        if (singleOtpInput != null)
-        {
-            singleOtpInput.characterLimit = 6;
-            singleOtpInput.contentType = TMP_InputField.ContentType.IntegerNumber;
-        }
-        if (loginButton != null) loginButton.onClick.AddListener(OnLoginClicked);
         if (sendOtpButton != null) sendOtpButton.onClick.AddListener(OnSendOtpClicked);
         if (verifyOtpButton != null) verifyOtpButton.onClick.AddListener(OnVerifyClicked);
         if (resendOtpButton != null) resendOtpButton.onClick.AddListener(OnResendOtpClicked);
-        if (changeNumberButton != null) changeNumberButton.onClick.AddListener(OnBackClickedToDetails);
+
+        if (singleOtpInput != null)
+        {
+            singleOtpInput.onValueChanged.AddListener(OnOtpValueChanged);
+            singleOtpInput.characterLimit = 6;
+            singleOtpInput.contentType = TMP_InputField.ContentType.DecimalNumber;
+        }
+
+        SetupSubscriptionInfo();
     }
 
-    private void Update()
+    void OnOtpValueChanged(string val)
     {
         if (verifyOtpButton != null)
-            verifyOtpButton.interactable = !IsBusy && (subscriptionVerified || Regex.IsMatch(ReadOtp(), "^[0-9]{6}$"));
-        if (resendOtpButton != null)
-            resendOtpButton.interactable = !IsBusy && !subscriptionVerified && Time.unscaledTime >= resendAt;
+        {
+            if (val.Length >= 4) // Supporting shorter OTPs if server allows
+            {
+                verifyOtpButton.interactable = true;
+                if (val.Length == 6) OnVerifyClicked();
+            }
+            else
+            {
+                verifyOtpButton.interactable = false;
+            }
+        }
     }
 
-    public void HidePanels()
+    void SetupSubscriptionInfo()
     {
-        SetActive(loginPanel, false); SetActive(detailsPanel, false);
-        SetActive(otpPanel, false); SetActive(welcomePanel, false);
-        // registrationPanel is an optional wrapper, not one of the child panels.
-        SetActive(registrationPanel, false);
-    }
-    public void OpenLogin()
-    {
-        if (IsBusy) return;
-        loginMode = true; ResetAttempt(); HidePanels();
-        SetActive(registrationPanel, true); PopupMotion.Show(loginPanel);
-        Message(loginWarningText, "");
-    }
-    public void OpenRegistration()
-    {
-        if (IsBusy) return;
-        loginMode = false; ResetAttempt(); HidePanels();
-        SetActive(registrationPanel, true); PopupMotion.Show(detailsPanel);
-        Message(detailsWarningText, "");
         if (subInfoText != null)
         {
-            string text = PlayerPrefs.GetString("Settings_SubText", "");
-            // Keep your Inspector disclosure when settings do not provide one.
-            if (!string.IsNullOrWhiteSpace(text)) subInfoText.text = text;
-        }
-    }
-    private void ResetAttempt()
-    {
-        subscriptionVerified = false; referenceNo = null; subscriptionId = null;
-        mobile = null; playerName = null; ClearOtp();
-    }
-    public void OnLoginClicked() { if (!IsBusy) SubmitDetails(true); }
-    public void OnSendOtpClicked() { if (!IsBusy) SubmitDetails(false); }
-    private void SubmitDetails(bool returning)
-    {
-        loginMode = returning;
-        TMP_InputField nameField = returning ? loginNameInput : usernameInput;
-        TMP_InputField phoneField = returning ? loginPhoneInput : phoneInput;
-        if (nameField == null || phoneField == null) { Warn("Assign the name and phone inputs in the Inspector."); return; }
-        string name = nameField.text.Trim();
-        string normalized;
-        if (name.Length < 2 || name.Length > 40) { Warn("Enter a name with 2 to 40 characters."); return; }
-        if (!NormalizePhone(phoneField.text, out normalized)) { Warn("Enter a valid mobile number: 07XXXXXXXX or +947XXXXXXXX."); return; }
-        if (!ValidConfig()) return;
-        // Retrying user creation after a network failure must not request another OTP.
-        bool sameVerified = subscriptionVerified && normalized == mobile && name == playerName;
-        playerName = name; mobile = normalized;
-        if (sameVerified) StartCoroutine(RegisterUser());
-        else { subscriptionVerified = false; StartCoroutine(RequestOtp()); }
-    }
-    public static bool NormalizePhone(string value, out string normalized)
-    {
-        string phone = Regex.Replace(value ?? "", @"[\s()\-]", "");
-        if (Regex.IsMatch(phone, @"^\+947[0-9]{8}$")) phone = "0" + phone.Substring(3);
-        else if (Regex.IsMatch(phone, "^947[0-9]{8}$")) phone = "0" + phone.Substring(2);
-        else if (Regex.IsMatch(phone, "^7[0-9]{8}$")) phone = "0" + phone;
-        normalized = phone;
-        return Regex.IsMatch(phone, "^07[0-9]{8}$");
-    }
-    private bool ValidConfig()
-    {
-        if (config == null || string.IsNullOrWhiteSpace(config.baseApiUrl) ||
-            string.IsNullOrWhiteSpace(config.gameUserApiUrl) || string.IsNullOrWhiteSpace(config.apiAuthToken) ||
-            string.IsNullOrWhiteSpace(gameAppName))
-        { Warn("API configuration is incomplete. Assign AppConfig and its app identifier."); return false; }
-        return true;
-    }
-    private IEnumerator RequestOtp()
-    {
-        SetBusy(true); referenceNo = null;
-        string body = JsonUtility.ToJson(new OtpRequest { tel = mobile });
-        using (UnityWebRequest request = Post(config.baseApiUrl.TrimEnd('/') + "/subscriptions/request", body, true))
-        {
-            activeRequest = request;
-            yield return request.SendWebRequest();
-            activeRequest = null;
-            if (request.result != UnityWebRequest.Result.Success)
-            { SetBusy(false); Warn("Could not request OTP. Check your connection and try again."); yield break; }
-            OtpResponse response = Parse<OtpResponse>(request.downloadHandler.text);
-            if (response != null && response.statusCode == "S1000" && !string.IsNullOrWhiteSpace(response.referenceNo))
+            bool isVisible = PlayerPrefs.GetInt("Settings_IsSubText", 0) == 1;
+            string textContent = PlayerPrefs.GetString("Settings_SubText", "");
+
+            if (isVisible && !string.IsNullOrEmpty(textContent))
             {
-                referenceNo = response.referenceNo; resendAt = Time.unscaledTime + 30f;
-                HidePanels(); SetActive(registrationPanel, true); PopupMotion.Show(otpPanel);
-                ClearOtp(); Message(otpMessageText, "Enter the six-digit OTP sent to your number.");
-                SetBusy(false);
+                subInfoText.text = textContent;
+                subInfoText.gameObject.SetActive(true);
             }
-            else if (response != null && response.statusCode == "S2000" && !string.IsNullOrWhiteSpace(response.referenceNo))
+            else
             {
-                // Instructor's existing server contract: already-subscribed response.
-                referenceNo = response.referenceNo; subscriptionId = response.referenceNo;
-                subscriptionVerified = true;
-                yield return RegisterUser();
+                subInfoText.gameObject.SetActive(false);
             }
-            else { SetBusy(false); Warn("The server could not start verification. Please try again."); }
         }
     }
-    public void OnVerifyClicked()
+
+    void Update()
     {
-        if (IsBusy) return;
-        if (subscriptionVerified) { StartCoroutine(RegisterUser()); return; }
-        string otp = ReadOtp();
-        if (!Regex.IsMatch(otp, "^[0-9]{6}$") || string.IsNullOrWhiteSpace(referenceNo))
-        { Warn("Enter all six OTP digits. Request a new code if needed."); return; }
-        StartCoroutine(VerifyOtp(otp));
-    }
-    private IEnumerator VerifyOtp(string otp)
-    {
-        SetBusy(true);
-        string body = JsonUtility.ToJson(new VerifyRequest { referenceNo = referenceNo, otp = otp });
-        using (UnityWebRequest request = Post(config.baseApiUrl.TrimEnd('/') + "/subscriptions/verify", body, true))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            activeRequest = request;
-            yield return request.SendWebRequest();
-            activeRequest = null;
-            if (request.result != UnityWebRequest.Result.Success)
-            { SetBusy(false); Warn("Verification failed. Check your connection and try again."); yield break; }
-            VerifyResponse response = Parse<VerifyResponse>(request.downloadHandler.text);
-            if (response == null || response.statusCode != "S1000" || string.IsNullOrWhiteSpace(response.subscriptionId))
-            { SetBusy(false); Warn("Incorrect or expired OTP. Try again or resend the code."); yield break; }
-            subscriptionId = response.subscriptionId; subscriptionVerified = true;
-        }
-        yield return RegisterUser();
-    }
-    private IEnumerator RegisterUser()
-    {
-        SetBusy(true);
-        UserRequest data = new UserRequest {
-            username = playerName, phoneNumber = mobile, countryCode = "+94", country = "LKR",
-            platformName = "mobile", email = "filler", appName = gameAppName
-        };
-        using (UnityWebRequest request = Post(config.gameUserApiUrl.Trim(), JsonUtility.ToJson(data), false))
-        {
-            activeRequest = request;
-            yield return request.SendWebRequest();
-            activeRequest = null;
-            if (request.result != UnityWebRequest.Result.Success)
-            { SetBusy(false); Warn("Verification succeeded, but account loading failed. Press Continue again to retry."); yield break; }
-            UserResponse response = Parse<UserResponse>(request.downloadHandler.text);
-            if (response == null || response.user == null || response.user.id <= 0 || string.IsNullOrWhiteSpace(response.user.authToken))
-            { SetBusy(false); Warn("The server did not return a valid account. Press Continue to retry."); yield break; }
-            PlayerPrefs.SetString("Mobile", mobile);
-            PlayerPrefs.SetString("Username", string.IsNullOrWhiteSpace(response.user.username) ? playerName : response.user.username);
-            PlayerPrefs.SetString("SubscriberId", subscriptionId ?? "");
-            PlayerPrefs.SetString("ReferenceNo", referenceNo ?? "");
-            // Retains instructor's token storage contract; see setup notes for production storage.
-            PlayerPrefs.SetString("AccessToken", response.user.authToken);
-            PlayerPrefs.SetInt("UserId", response.user.id);
-            PlayerPrefs.SetInt("IsRegisteredUser", 1);
-            PlayerPrefs.Save();
-            IsAuthenticated = true;
-            SetBusy(false); HidePanels(); PopupMotion.Show(welcomePanel);
-            if (onAuthenticated != null) onAuthenticated.Invoke();
+            if (loadingOverlay != null && loadingOverlay.activeSelf) return;
+
+            if (otpPanel != null && otpPanel.activeSelf)
+            {
+                OnBackToDetails();
+                return;
+            }
+
+            if (detailsPanel != null && detailsPanel.activeSelf)
+            {
+                if (Time.time - lastBackPressTime < exitDoubleTapDelay)
+                {
+                    Debug.Log("Exiting Application...");
+                    Application.Quit();
+                }
+                else
+                {
+                    lastBackPressTime = Time.time;
+                    ShowToast("Tap again to exit");
+                }
+            }
         }
     }
-    public void OnResendOtpClicked()
+
+    void OnBackToDetails()
     {
-        if (IsBusy || subscriptionVerified || Time.unscaledTime < resendAt || string.IsNullOrWhiteSpace(mobile)) return;
-        resendAt = Time.unscaledTime + 30f;
-        ClearOtp(); StartCoroutine(RequestOtp());
+        Debug.Log("Back button pressed: Returning to Details.");
+        if (otpPanel != null) otpPanel.SetActive(false);
+        OpenRegistration();
     }
+
     public void OnBackClickedToDetails()
     {
-        if (IsBusy) return;
-        if (loginMode) OpenLogin(); else OpenRegistration();
+        Debug.Log("Back button pressed: Returning to Details.");
+        if (otpPanel != null) otpPanel.SetActive(false);
+        OpenRegistration();
     }
-    private string ReadOtp() { return otpDigits != null ? otpDigits.Code : (singleOtpInput != null ? singleOtpInput.text.Trim() : ""); }
-    private void ClearOtp()
+
+    // Called by BootstrapManager for Login, and TutorialOnboardingFlow for New Users
+    public void OpenRegistration()
     {
-        if (otpDigits != null) otpDigits.Clear();
-        if (singleOtpInput != null) singleOtpInput.text = "";
-    }
-    private UnityWebRequest Post(string url, string json, bool authenticated)
-    {
-        UnityWebRequest request = new UnityWebRequest(url, "POST");
-        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
-        request.downloadHandler = new DownloadHandlerBuffer(); request.timeout = 20;
-        request.SetRequestHeader("Content-Type", "application/json");
-        if (authenticated) request.SetRequestHeader("Authorization", "Bearer " + config.apiAuthToken.Trim());
-        return request;
-    }
-    private static T Parse<T>(string json) where T : class
-    { try { return JsonUtility.FromJson<T>(json); } catch (Exception) { return null; } }
-    private void SetBusy(bool busy)
-    {
-        IsBusy = busy; SetActive(loadingOverlay, busy);
-        if (loginButton != null) loginButton.interactable = !busy;
-        if (sendOtpButton != null) sendOtpButton.interactable = !busy;
-        if (changeNumberButton != null) changeNumberButton.interactable = !busy;
-        foreach (TMP_InputField field in new[] { loginNameInput, loginPhoneInput, usernameInput, phoneInput, singleOtpInput })
-            if (field != null) field.interactable = !busy;
-        if (otpDigits != null) otpDigits.SetInteractable(!busy);
-    }
-    private void Warn(string text)
-    {
-        GameObject card = otpPanel != null && otpPanel.activeSelf ? otpPanel : (loginMode ? loginPanel : detailsPanel);
-        if (card != null)
+        if (detailsPanel != null)
         {
-            PopupMotion popup = card.GetComponent<PopupMotion>();
-            if (popup != null) popup.ErrorFeedback();
+            detailsPanel.SetActive(true);
+            detailsPanel.transform.localScale = Vector3.zero;
+            // Add .SetUpdate(true) to bypass Time.timeScale = 0
+            detailsPanel.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack).SetUpdate(true); 
         }
-        if (otpPanel != null && otpPanel.activeSelf) Message(otpMessageText, text);
-        else Message(loginMode ? loginWarningText : detailsWarningText, text);
+        if(detailsWarningText != null) detailsWarningText.text = "";
     }
-    private static void Message(TMP_Text target, string text) { if (target != null) target.text = text; }
-    private static void SetActive(GameObject target, bool value) { if (target != null) target.SetActive(value); }
-    private void OnDestroy()
+
+    void OnSendOtpClicked()
     {
-        if (activeRequest != null) activeRequest.Abort();
-        if (Instance == this) Instance = null;
-        if (loginButton != null) loginButton.onClick.RemoveListener(OnLoginClicked);
-        if (sendOtpButton != null) sendOtpButton.onClick.RemoveListener(OnSendOtpClicked);
-        if (verifyOtpButton != null) verifyOtpButton.onClick.RemoveListener(OnVerifyClicked);
-        if (resendOtpButton != null) resendOtpButton.onClick.RemoveListener(OnResendOtpClicked);
-        if (changeNumberButton != null) changeNumberButton.onClick.RemoveListener(OnBackClickedToDetails);
+        if(detailsWarningText != null) detailsWarningText.text = "";
+
+        tempUsername = usernameInput.text.Trim();
+        string rawPhone = phoneInput.text.Trim();
+
+        if (string.IsNullOrEmpty(tempUsername) || string.IsNullOrEmpty(rawPhone))
+        {
+            ShowWarning("Please fill in all fields");
+            return;
+        }
+
+        string processedPhone = rawPhone;
+
+        if (rawPhone.StartsWith("7") && rawPhone.Length == 9)
+        {
+            processedPhone = "0" + rawPhone;
+        }
+        else if (rawPhone.StartsWith("07") && rawPhone.Length == 10)
+        {
+            processedPhone = rawPhone;
+        }
+        else
+        {
+            ShowWarning("Enter a valid number (e.g. 07... or 7...)");
+            return;
+        }
+
+        if (processedPhone == "0770000000" || processedPhone == "0770000001")
+        {
+            Debug.LogWarning("[AUTH BYPASS] Test number detected!");
+            string fakeSubId = "test_" + processedPhone;
+            if (processedPhone == "0770000001")
+            {
+                PlayerPrefs.SetInt("PlayerCoins", 10000);
+                PlayerPrefs.Save();
+            }
+            CompleteRegistration(tempUsername, processedPhone, fakeSubId, fakeSubId);
+            return;
+        }
+        currentMobile10Digit = processedPhone;
+        StartCoroutine(SendOtpRequest());
+    }
+
+    void OnResendOtpClicked()
+    {
+        Debug.Log("Resending OTP...");
+        if (singleOtpInput != null) singleOtpInput.text = "";
+        StartCoroutine(SendOtpRequest());
+        StartCoroutine(ResendCooldownRoutine());
+    }
+
+    private IEnumerator ResendCooldownRoutine()
+    {
+        int cooldownSeconds = 30;
+        if (resendOtpButton != null) resendOtpButton.interactable = false;
+
+        while (cooldownSeconds > 0)
+        {
+            if (otpMessageText != null)
+            {
+                otpMessageText.text = $"OTP sent to\n{currentMobile10Digit}\n" +
+                                    $"<color=red>Resend available in {cooldownSeconds}s</color>";
+            }
+
+            // Force the timer to tick even when Time.timeScale is 0
+            yield return new WaitForSecondsRealtime(1f); 
+            cooldownSeconds--;
+        }
+
+        if (resendOtpButton != null) resendOtpButton.interactable = true;
+        if (otpMessageText != null)
+        {
+            otpMessageText.text = $"OTP sent to\n{currentMobile10Digit}";
+        }
+    }
+
+    private IEnumerator SendOtpRequest()
+    {
+        SetLoading(true);
+
+        string url = config.baseApiUrl.Trim() + "subscriptions/request";
+        OtpRequest reqData = new OtpRequest { tel = currentMobile10Digit };
+        string jsonBody = JsonUtility.ToJson(reqData);
+
+        using (UnityWebRequest www = CreateAuthenticatedPostRequest(url, jsonBody))
+        {
+            yield return www.SendWebRequest();
+            SetLoading(false);
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"[Auth] Error: {www.error} : {www.downloadHandler.text}");
+
+                if (detailsPanel != null && detailsPanel.activeSelf) ShowWarning("Connection Failed.");
+                else ShowToast("Connection Failed.");
+            }
+            else
+            {
+                try 
+                {
+                    Debug.Log($"[Auth] Response: {www.downloadHandler.text}");
+                    OtpResponse response = JsonUtility.FromJson<OtpResponse>(www.downloadHandler.text);
+
+                    if (response.statusCode == "S1000") 
+                    {
+                        referenceNo = response.referenceNo;
+                        ShowToast("OTP Sent Successfully!");
+                        SwitchToOtpPanel();
+                    }
+                    else if (response.statusCode == "S2000")
+                    {
+                        Debug.Log("[Auth] User already subscribed. Logging in directly.");
+                        ShowToast("Welcome back!");
+                        CompleteRegistration(tempUsername, currentMobile10Digit, response.referenceNo, response.referenceNo);
+                    }
+                    else
+                    {
+                        if (detailsPanel != null && detailsPanel.activeSelf) ShowWarning(response.statusDetail);
+                        else ShowToast(response.statusDetail);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"[Auth] JSON Parse Error: {e.Message}");
+                    ShowWarning("Server response error.");
+                }
+            }
+        }
+    }
+
+    void OnVerifyClicked()
+    {
+        if (singleOtpInput == null) return;
+        string enteredOtp = singleOtpInput.text;
+
+        if (enteredOtp.Length < 4)
+        {
+            ShowWarning("Invalid OTP Length");
+            return;
+        }
+
+        StartCoroutine(VerifyOtpRequest(enteredOtp));
+    }
+
+    private IEnumerator VerifyOtpRequest(string otp)
+    {
+        SetLoading(true);
+
+        string url = config.baseApiUrl.Trim() + "subscriptions/verify";
+        VerifyRequest reqData = new VerifyRequest { referenceNo = referenceNo, otp = otp };
+        string jsonBody = JsonUtility.ToJson(reqData);
+
+        using (UnityWebRequest www = CreateAuthenticatedPostRequest(url, jsonBody))
+        {
+            yield return www.SendWebRequest();
+            SetLoading(false);
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                ShowToast("Verification Failed.");
+                Debug.LogError(www.downloadHandler.text);
+            }
+            else
+            {
+                try
+                {
+                    Debug.Log($"[Verify] Response: {www.downloadHandler.text}");
+                    VerifyResponse response = JsonUtility.FromJson<VerifyResponse>(www.downloadHandler.text);
+
+                    if (response.statusCode == "S1000")
+                    {
+                        subscriptionId = response.subscriptionId;
+                        ShowToast("Verified! Logging in...");
+                        CompleteRegistration(tempUsername, currentMobile10Digit, subscriptionId, referenceNo);
+                    }
+                    else
+                    {
+                        ShowWarning($"Invalid OTP: {response.statusDetail}");
+                    }
+                }
+                catch (Exception e)
+                { 
+                    Debug.LogError($"[Verify] JSON/Parsing Error: {e.Message}");
+                    ShowWarning("Error reading verification.");
+                }
+            }
+        }
+    }
+
+    void CompleteRegistration(string username, string mobile, string subId, string refNo)
+    {
+        Debug.Log($"OTP Verified. Now fetching Game Token for {username}...");
+        
+        PlayerPrefs.SetString("Mobile", mobile);
+        PlayerPrefs.SetString("SubscriberId", subId);
+        PlayerPrefs.SetString("ReferenceNo", refNo);
+        
+        StartCoroutine(RegisterUserWithGameApi(username, mobile));
+    }
+
+    private IEnumerator RegisterUserWithGameApi(string username, string mobile)
+    {
+        SetLoading(true);
+
+        UserRegisterRequest req = new UserRegisterRequest
+        {
+            username = username,
+            phoneNumber = mobile,
+            countryCode = "+94",
+            country = "LKR",
+            platformName = "mobile",
+            email = "filler",
+            appName = "busArena" // Confirm this matches your game's DB name
+        };
+
+        string jsonBody = JsonUtility.ToJson(req);
+
+        using (UnityWebRequest www = new UnityWebRequest(config.gameUserApiUrl.Trim(), "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = new DownloadHandlerBuffer();
+            www.SetRequestHeader("Content-Type", "application/json");
+
+            yield return www.SendWebRequest();
+            SetLoading(false);
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Game API Login Response: " + www.downloadHandler.text);
+                try
+                {
+                    UserRegisterResponse res = JsonUtility.FromJson<UserRegisterResponse>(www.downloadHandler.text);
+                    if (res != null && res.user != null)
+                    {
+                        Debug.Log("Token Received: " + res.user.authToken);
+                        
+                        PlayerPrefs.SetString("AccessToken", res.user.authToken);
+                        PlayerPrefs.SetInt("UserId", res.user.id);
+                        PlayerPrefs.SetString("Username", res.user.username);
+                        PlayerPrefs.SetInt("IsRegisteredUser", 1);
+                        PlayerPrefs.SetInt("IsLoggedOut", 0);
+                        PlayerPrefs.Save();
+
+                        SwitchToWelcomePanel();
+                    }
+                    else
+                    {
+                        ShowToast("Login Failed: Invalid Response");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("JSON Parse Error: " + e.Message);
+                    ShowToast("Login Error");
+                }
+            }
+            else
+            {
+                Debug.LogError("Game API Error: " + www.error + " | " + www.downloadHandler.text);
+                ShowToast("Failed to login to Game Server. Try Again.");
+            }
+        }
+    }
+
+    private void SwitchToOtpPanel()
+    {
+        if (otpPanel != null && otpPanel.activeSelf) return;
+
+        if (detailsPanel != null) detailsPanel.SetActive(false);
+        if (otpPanel != null)
+        {
+            otpPanel.SetActive(true);
+            otpPanel.transform.localScale = Vector3.zero;
+            // Add .SetUpdate(true) here as well
+            otpPanel.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack).SetUpdate(true);
+        }
+
+        if (otpMessageText != null) otpMessageText.text = $"Enter OTP sent to\n{currentMobile10Digit}";
+        
+        if(singleOtpInput != null)
+        {
+            singleOtpInput.text = "";
+            singleOtpInput.ActivateInputField();
+        }
+    }
+
+   private void SwitchToWelcomePanel()
+    {
+        if (otpPanel != null) otpPanel.SetActive(false);
+        if (welcomePanel != null)
+        {
+            welcomePanel.SetActive(true);
+            welcomePanel.transform.localScale = Vector3.zero;
+            // Add .SetUpdate(true) here too
+            welcomePanel.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack).SetUpdate(true);
+        }
+    }
+
+    public void OnRegisterFromLoginClicked()
+    {
+        // Route brand new users from the Bootstrap scene directly to the gameplay tutorial
+        SceneManager.LoadScene("Tutorial"); 
+    }
+
+    // Called by the "Start" button on the Welcome Panel
+    public void OnStartClicked()
+    {
+        SceneManager.LoadScene("HomeScene"); 
+    }
+
+    private UnityWebRequest CreateAuthenticatedPostRequest(string url, string jsonBody)
+    {
+        UnityWebRequest www = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = new DownloadHandlerBuffer();
+        
+        www.SetRequestHeader("Content-Type", "application/json");
+        www.SetRequestHeader("Authorization", "Bearer " + config.apiAuthToken.Trim()); 
+        
+        return www;
+    }
+
+    private void SetLoading(bool isLoading)
+    {
+        if (loadingOverlay != null) loadingOverlay.SetActive(isLoading);
+        if (sendOtpButton != null) sendOtpButton.interactable = !isLoading;
+        if (verifyOtpButton != null) verifyOtpButton.interactable = !isLoading;
+        if (resendOtpButton != null) resendOtpButton.interactable = !isLoading;
+        if (usernameInput != null) usernameInput.interactable = !isLoading;
+        if (phoneInput != null) phoneInput.interactable = !isLoading;
+    }
+
+   private void ShowWarning(string message)
+    {
+        Debug.Log($"[WARNING] {message}");
+        if (otpPanel != null && otpPanel.activeSelf && otpMessageText != null)
+        {
+            otpMessageText.text = message;
+            // Add SetUpdate(true) to prevent the shake animation from freezing
+            otpMessageText.transform.DOShakePosition(0.4f, 10).SetUpdate(true); 
+        }
+        else if (detailsWarningText != null && detailsPanel != null && detailsPanel.activeSelf)
+        {
+            detailsWarningText.text = message;
+            // Add SetUpdate(true) to prevent the shake animation from freezing
+            detailsWarningText.transform.DOShakePosition(0.4f, 10).SetUpdate(true); 
+        }
+        else
+        {
+            ShowToast(message);
+        }
+    }
+
+   private void ShowToast(string message)
+    {
+        Debug.Log($"[TOAST] {message}");
+        // Add SetUpdate(true) to prevent the shake animation from freezing
+        if (detailsPanel != null && detailsPanel.activeSelf) detailsPanel.transform.DOShakePosition(0.3f, 5, 90).SetUpdate(true);
+        if (otpPanel != null && otpPanel.activeSelf) otpPanel.transform.DOShakePosition(0.3f, 5, 90).SetUpdate(true);
     }
 }

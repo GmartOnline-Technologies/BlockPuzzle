@@ -1,149 +1,142 @@
-using System;
-using System.Collections;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.Networking;
+using System.Collections;
+using System;
 
 public class BootstrapManager : MonoBehaviour
 {
+    [Header("API Config")]
     public AppConfig config;
-    public RegistrationController registration;
-    [Header("Splash and loading")]
-    public GameObject splashPanel, loadingBarRoot;
-    public LoadingScreen loadingScreen;
-    public TMP_Text loadingText;
-    public float splashOnlySeconds = 1.5f;
-    public float minimumLoadingSeconds = 2f;
-    public Button retryButton;
+    
     [Header("Panels")]
-    public GameObject updatePopup, closeButton;
-    public Button updateNowButton;
-    [Header("Scenes")]
-    public string onboardingName = "Tutorial";
-    public string mainMenuName = "HomeScene";
-    public bool WasRegisteredAtLaunch { get; private set; }
-    private bool starting, changingScene, forcedUpdate;
-    private UnityWebRequest activeRequest;
-    [Serializable] private class SettingsResponse { public bool success; public SettingsData data; }
-    [Serializable] private class SettingsData
-    {
-        public string sub_text, android_version, ios_version;
-        public bool is_sub_text, is_unsub, update_required;
-    }
-    private void Start()
-    {
-        if (registration == null) registration = RegistrationController.Instance;
-        if (retryButton != null) retryButton.onClick.AddListener(RetryStartup);
-        if (updateNowButton != null) updateNowButton.onClick.AddListener(OnUpdateClicked);
-        if (closeButton != null && closeButton.GetComponent<Button>() != null)
-            closeButton.GetComponent<Button>().onClick.AddListener(OnCloseUpdatePopup);
-        RetryStartup();
-    }
-    public void RetryStartup()
-    {
-        if (!starting && !changingScene) StartCoroutine(Startup());
-    }
-    private IEnumerator Startup()
-    {
-        starting = true; forcedUpdate = false;
-        Active(updatePopup, false);
-        if (registration != null) registration.HidePanels();
-        Active(splashPanel, true); Active(loadingBarRoot, false);
-        if (retryButton != null) retryButton.gameObject.SetActive(false);
+    public GameObject languagePanel;
+    public GameObject loadingPanel;
 
-        if (loadingText != null) loadingText.text = "Loading...";
-        yield return new WaitForSecondsRealtime(Mathf.Max(0f, splashOnlySeconds));
-        Active(loadingBarRoot, true);
-        if (loadingScreen != null) loadingScreen.BeginLoading();
-        WasRegisteredAtLaunch = PlayerPrefs.GetInt("IsRegisteredUser", 0) == 1;
-        if (config == null || registration == null || string.IsNullOrWhiteSpace(config.baseApiUrl) || string.IsNullOrWhiteSpace(config.apiAuthToken))
-        { StartupError("Assign AppConfig and RegistrationController, then retry."); yield break; }
-        SettingsResponse settings = null;
-        using (UnityWebRequest request = UnityWebRequest.Get(config.baseApiUrl.TrimEnd('/') + "/apps/settings/by-token"))
+    [Serializable]
+    public class AppSettingsResponse
+    {
+        public bool success;
+        public AppSettingsData data;
+    }
+
+    [Serializable]
+    public class AppSettingsData
+    {
+        public int app_id;
+        public string app_name;
+        public string sub_text;
+        public bool is_sub_text;
+        public bool is_unsub;
+        public string android_version;
+        public string ios_version;
+        public bool update_required;
+    }
+
+    void Start()
+    {
+        Application.targetFrameRate = 30;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
+        if (languagePanel != null) languagePanel.SetActive(false);
+        if (loadingPanel != null) loadingPanel.SetActive(true);
+
+        StartCoroutine(StartupSequence());
+    }
+
+    IEnumerator StartupSequence()
+    {
+        // 1. Wait for Internet connection
+        while (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            activeRequest = request; request.timeout = 20;
-            request.SetRequestHeader("Authorization", "Bearer " + config.apiAuthToken.Trim());
-            UnityWebRequestAsyncOperation operation = request.SendWebRequest();
-            float elapsed = 0f;
-            float minimum = Mathf.Max(0.1f, minimumLoadingSeconds);
-            while (!operation.isDone || elapsed < minimum)
+            yield return null; 
+        }
+
+        // 2. Start the API Request
+        string url = config.baseApiUrl.TrimEnd('/') + "/apps/settings/by-token";
+        UnityWebRequest www = new UnityWebRequest(url, "GET");
+        www.downloadHandler = new DownloadHandlerBuffer();
+        www.SetRequestHeader("Authorization", "Bearer " + config.apiAuthToken.Trim());
+        
+        UnityWebRequestAsyncOperation requestOp = www.SendWebRequest();
+
+        // 3. Wait for the API Request to finish
+        if (!requestOp.isDone) yield return requestOp;
+
+        // 4. Process the API Data
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            try
             {
-                elapsed += Time.unscaledDeltaTime;
-                if (loadingScreen != null) loadingScreen.SetProgress(Mathf.Min(0.9f, elapsed / minimum * 0.9f));
-                yield return null;
+                Debug.Log($"[Bootstrap] Settings: {www.downloadHandler.text}");
+                AppSettingsResponse response = JsonUtility.FromJson<AppSettingsResponse>(www.downloadHandler.text);
+                
+                if (response != null && response.success && response.data != null)
+                {
+                    PlayerPrefs.SetString("Settings_SubText", response.data.sub_text);
+                    PlayerPrefs.SetInt("Settings_IsSubText", response.data.is_sub_text ? 1 : 0);
+                    PlayerPrefs.SetInt("Settings_IsUnsub", response.data.is_unsub ? 1 : 0);
+                    PlayerPrefs.SetString("Settings_AndroidVersion", response.data.android_version);
+                    PlayerPrefs.SetInt("Settings_UpdateRequired", response.data.update_required ? 1 : 0);
+                    PlayerPrefs.Save();
+                    
+                    Debug.Log($"[Bootstrap] Settings Saved. Server Version: {response.data.android_version}");
+                }
             }
-            activeRequest = null;
-            if (request.result == UnityWebRequest.Result.Success)
-            { try { settings = JsonUtility.FromJson<SettingsResponse>(request.downloadHandler.text); } catch (Exception) { } }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Bootstrap] Parse Error: {e.Message}");
+            }
         }
-        if (settings == null || !settings.success || settings.data == null)
-        { StartupError("Unable to load game settings. Check your connection and tap Retry."); yield break; }
-        SettingsData data = settings.data;
-        PlayerPrefs.SetString("Settings_SubText", data.sub_text ?? "");
-        PlayerPrefs.SetInt("Settings_IsSubText", data.is_sub_text ? 1 : 0);
-        PlayerPrefs.SetInt("Settings_IsUnsub", data.is_unsub ? 1 : 0);
-        PlayerPrefs.SetString("Settings_AndroidVersion", data.android_version ?? "");
-        PlayerPrefs.SetInt("Settings_UpdateRequired", data.update_required ? 1 : 0);
-        PlayerPrefs.Save();
-        if (loadingScreen != null) yield return loadingScreen.CompleteLoading();
-        starting = false;
-        string requiredVersion = Application.platform == RuntimePlatform.IPhonePlayer ? data.ios_version : data.android_version;
-        if (!string.IsNullOrWhiteSpace(requiredVersion) && requiredVersion != Application.version)
+        else
         {
-            forcedUpdate = data.update_required;
-            if (updatePopup != null)
-            { PopupMotion.Show(updatePopup); Active(closeButton, !forcedUpdate); yield break; }
-            if (forcedUpdate) { StartupError("An app update is required. Configure the update panel."); yield break; }
+            Debug.LogError($"[Bootstrap] API Error: {www.error}");
         }
-        OpenLogin();
+
+        // 5. Hide Loading Bar
+        if (loadingPanel != null) loadingPanel.SetActive(false);
+
+        // 6. Routing Logic
+        InitialCheck();
     }
-    private void StartupError(string message)
+
+    void InitialCheck()
     {
-        starting = false;
-        if (loadingText != null) loadingText.text = message;
-        if (retryButton != null) retryButton.gameObject.SetActive(true);
+        bool hasLanguageSet = PlayerPrefs.HasKey("SelectedLanguage");
+        bool hasFinishedTutorial = PlayerPrefs.GetInt("TutorialFinished", 0) == 1;
+        bool isLoggedOut = PlayerPrefs.GetInt("IsLoggedOut", 0) == 1;
+        bool isRegistered = PlayerPrefs.GetInt("IsRegisteredUser", 0) == 1;
+
+        if (isLoggedOut || (hasFinishedTutorial && !isRegistered))
+        {
+            // Show the Login/Welcome Back Panel in the Bootstrap Scene
+            if (RegistrationController.Instance != null)
+            {
+                RegistrationController.Instance.OpenRegistration();
+            }
+        }
+        else if (isRegistered)
+        {
+            // Already logged in, jump straight to the game
+            SceneManager.LoadScene("HomeScene");
+        }
+        else if (!hasLanguageSet)
+        {
+            // Brand new player -> Show Language Selection
+            if (languagePanel != null) languagePanel.SetActive(true);
+        }
+        else
+        {
+            // Language is set but tutorial isn't finished -> Go to Tutorial
+            SceneManager.LoadScene("Tutorial");
+        }
     }
-    private void OpenLogin()
+
+    // Called by the English/Sinhala buttons
+    public void OnLanguageSelected(int languageIndex)
     {
-        Active(loadingBarRoot, false); Active(splashPanel, false);
-        // Both groups see Login/Register. The local preference is a hint, not authentication.
-        registration.OpenLogin();
-    }
-    public void OnRegisterClicked()
-    {
-        if (starting || changingScene || registration == null || registration.IsBusy || forcedUpdate) return;
-        LoadScene(onboardingName);
-    }
-    public void OnStartClicked()
-    {
-        if (registration == null || !registration.IsAuthenticated) return;
-        LoadScene(mainMenuName);
-    }
-    private void LoadScene(string name)
-    {
-        if (changingScene) return;
-        if (!Application.CanStreamedLevelBeLoaded(name))
-        { Debug.LogError("Add scene to the build scene list: " + name, this); return; }
-        changingScene = true; Time.timeScale = 1f; SceneManager.LoadSceneAsync(name);
-    }
-    public void OnCloseUpdatePopup()
-    { if (forcedUpdate) return; Active(updatePopup, false); OpenLogin(); }
-    public void OnUpdateClicked()
-    {
-        // Matches the instructor's Android update route; no Store URL field needed.
-#if UNITY_ANDROID
-        Application.OpenURL("market://details?id=" + Application.identifier);
-#endif
-    }
-    private static void Active(GameObject target, bool value) { if (target != null) target.SetActive(value); }
-    private void OnDestroy()
-    {
-        if (activeRequest != null) activeRequest.Abort();
-        if (retryButton != null) retryButton.onClick.RemoveListener(RetryStartup);
-        if (updateNowButton != null) updateNowButton.onClick.RemoveListener(OnUpdateClicked);
-        if (closeButton != null && closeButton.GetComponent<Button>() != null)
-            closeButton.GetComponent<Button>().onClick.RemoveListener(OnCloseUpdatePopup);
+        PlayerPrefs.SetInt("SelectedLanguage", languageIndex);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("Tutorial");
     }
 }

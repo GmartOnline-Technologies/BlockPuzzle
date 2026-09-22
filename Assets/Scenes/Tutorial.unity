@@ -371,6 +371,7 @@ GameObject:
   - component: {fileID: 32912094}
   - component: {fileID: 32912096}
   - component: {fileID: 32912095}
+  - component: {fileID: 32912097}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -497,6 +498,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 32912093}
   m_CullTransparentMesh: 1
+--- !u!114 &32912097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32912093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Your Name
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &40366491
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,6 +662,7 @@ GameObject:
   - component: {fileID: 44795179}
   - component: {fileID: 44795181}
   - component: {fileID: 44795180}
+  - component: {fileID: 44795182}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -771,6 +789,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 44795178}
   m_CullTransparentMesh: 1
+--- !u!114 &44795182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44795178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Please select your language to continue. You can change later
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &61851309
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,7 +870,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50.220215, y: -11.34535}
+  m_AnchoredPosition: {x: 50.22021, y: -11.34535}
   m_SizeDelta: {x: 100.44042, y: 22.6907}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &62021588
@@ -1025,6 +1059,7 @@ GameObject:
   - component: {fileID: 119867756}
   - component: {fileID: 119867758}
   - component: {fileID: 119867757}
+  - component: {fileID: 119867759}
   m_Layer: 5
   m_Name: Text (TMP) (1)
   m_TagString: Untagged
@@ -1153,6 +1188,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 119867755}
   m_CullTransparentMesh: 1
+--- !u!114 &119867759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 119867755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Your Number
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &128985378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1489,6 +1540,7 @@ GameObject:
   - component: {fileID: 211429199}
   - component: {fileID: 211429202}
   - component: {fileID: 211429201}
+  - component: {fileID: 211429203}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1671,6 +1723,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &211429203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211429197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Continue
+  fontProfileName: font1
+  englishMaterial: {fileID: -227298571573638810, guid: b638bd1c198c8ea4983501a8ac956af6, type: 2}
+  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &217848262
 GameObject:
   m_ObjectHideFlags: 0
@@ -2267,6 +2335,7 @@ GameObject:
   - component: {fileID: 334338324}
   - component: {fileID: 334338326}
   - component: {fileID: 334338325}
+  - component: {fileID: 334338327}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -2393,6 +2462,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 334338323}
   m_CullTransparentMesh: 1
+--- !u!114 &334338327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334338323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Your Details
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &371482614
 GameObject:
   m_ObjectHideFlags: 0
@@ -2404,6 +2489,7 @@ GameObject:
   - component: {fileID: 371482615}
   - component: {fileID: 371482617}
   - component: {fileID: 371482616}
+  - component: {fileID: 371482618}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2530,6 +2616,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 371482614}
   m_CullTransparentMesh: 1
+--- !u!114 &371482618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371482614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: OTP Number
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &375762441
 GameObject:
   m_ObjectHideFlags: 0
@@ -2771,8 +2873,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 971724854}
-        m_TargetAssemblyTypeName: BootstrapManager, Assembly-CSharp
+      - m_Target: {fileID: 971724856}
+        m_TargetAssemblyTypeName: TutorialOnboardingFlow, Assembly-CSharp
         m_MethodName: OnStartClicked
         m_Mode: 1
         m_Arguments:
@@ -3200,6 +3302,7 @@ GameObject:
   - component: {fileID: 487248044}
   - component: {fileID: 487248047}
   - component: {fileID: 487248046}
+  - component: {fileID: 487248048}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3382,6 +3485,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &487248048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487248042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Start
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &494849524
 GameObject:
   m_ObjectHideFlags: 0
@@ -4557,6 +4676,7 @@ GameObject:
   - component: {fileID: 583717864}
   - component: {fileID: 583717866}
   - component: {fileID: 583717865}
+  - component: {fileID: 583717867}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -4683,6 +4803,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 583717863}
   m_CullTransparentMesh: 1
+--- !u!114 &583717867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583717863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Change number
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &597670559
 GameObject:
   m_ObjectHideFlags: 0
@@ -5091,6 +5227,7 @@ GameObject:
   - component: {fileID: 674973057}
   - component: {fileID: 674973059}
   - component: {fileID: 674973058}
+  - component: {fileID: 674973060}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -5217,6 +5354,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 674973056}
   m_CullTransparentMesh: 1
+--- !u!114 &674973060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 674973056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Please fill your details to create game account
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &710501232
 GameObject:
   m_ObjectHideFlags: 0
@@ -5457,6 +5610,7 @@ GameObject:
   - component: {fileID: 764926292}
   - component: {fileID: 764926294}
   - component: {fileID: 764926293}
+  - component: {fileID: 764926295}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -5583,6 +5737,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 764926291}
   m_CullTransparentMesh: 1
+--- !u!114 &764926295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764926291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Language
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &842644573
 GameObject:
   m_ObjectHideFlags: 0
@@ -5594,6 +5764,7 @@ GameObject:
   - component: {fileID: 842644574}
   - component: {fileID: 842644576}
   - component: {fileID: 842644575}
+  - component: {fileID: 842644577}
   m_Layer: 5
   m_Name: warning_Text
   m_TagString: Untagged
@@ -5720,6 +5891,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842644573}
   m_CullTransparentMesh: 1
+--- !u!114 &842644577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842644573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Please enter OTP number we text to your number
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &851292654
 GameObject:
   m_ObjectHideFlags: 0
@@ -5843,7 +6030,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &861867470
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6090,6 +6277,7 @@ GameObject:
   - component: {fileID: 886023058}
   - component: {fileID: 886023060}
   - component: {fileID: 886023059}
+  - component: {fileID: 886023061}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -6216,6 +6404,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886023057}
   m_CullTransparentMesh: 1
+--- !u!114 &886023061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886023057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Tutorial
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
+  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &908206399
 GameObject:
   m_ObjectHideFlags: 0
@@ -6438,7 +6642,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 971724855}
-  - component: {fileID: 971724854}
   - component: {fileID: 971724853}
   - component: {fileID: 971724856}
   m_Layer: 0
@@ -6461,57 +6664,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RegistrationController
   config: {fileID: 11400000, guid: 01eecd217516f9d40b92f8f672c1fb70, type: 2}
-  gameAppName: Block puzzle
-  registrationPanel: {fileID: 1893982758}
-  loginPanel: {fileID: 0}
   detailsPanel: {fileID: 2115590812}
   otpPanel: {fileID: 1545666711}
   welcomePanel: {fileID: 2105570194}
   loadingOverlay: {fileID: 308327264}
-  loginNameInput: {fileID: 0}
-  loginPhoneInput: {fileID: 0}
-  loginButton: {fileID: 0}
-  loginWarningText: {fileID: 0}
   usernameInput: {fileID: 1590473762}
   phoneInput: {fileID: 280228336}
   sendOtpButton: {fileID: 1483451379}
   detailsWarningText: {fileID: 1092596515}
   subInfoText: {fileID: 1205889819}
-  singleOtpInput: {fileID: 877382354}
-  otpDigits: {fileID: 128985380}
+  singleOtpInput: {fileID: 710501234}
   verifyOtpButton: {fileID: 657062383}
   resendOtpButton: {fileID: 476813287}
-  changeNumberButton: {fileID: 658038047}
   otpMessageText: {fileID: 842644575}
-  onAuthenticated:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &971724854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 971724852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 280f58ac05d78fa49810d63af1cbb54d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BootstrapManager
-  config: {fileID: 11400000, guid: 01eecd217516f9d40b92f8f672c1fb70, type: 2}
-  registration: {fileID: 971724853}
-  splashPanel: {fileID: 308327264}
-  loadingBarRoot: {fileID: 1319594947}
-  loadingScreen: {fileID: 1887717351}
-  loadingText: {fileID: 1986402855}
-  splashOnlySeconds: 1.5
-  minimumLoadingSeconds: 3
-  retryButton: {fileID: 0}
-  updatePopup: {fileID: 0}
-  closeButton: {fileID: 0}
-  updateNowButton: {fileID: 0}
-  onboardingName: Tutorial
-  mainMenuName: HomeScene
 --- !u!4 &971724855
 Transform:
   m_ObjectHideFlags: 0
@@ -6545,9 +6710,8 @@ MonoBehaviour:
   handGuide: {fileID: 1687254877}
   languagePanel: {fileID: 654424931}
   gameplayInputs: []
-  celebrationSeconds: 2.3
+  celebrationSeconds: 4
   freezeGameplayBehindForms: 1
-  homeSceneName: HomeScene
   observeBoardAutomatically: 1
 --- !u!1 &989103349
 GameObject:
@@ -7236,6 +7400,7 @@ GameObject:
   - component: {fileID: 1184371735}
   - component: {fileID: 1184371737}
   - component: {fileID: 1184371736}
+  - component: {fileID: 1184371738}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -7362,6 +7527,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1184371734}
   m_CullTransparentMesh: 1
+--- !u!114 &1184371738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1184371734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Continue
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &1185784889
 GameObject:
   m_ObjectHideFlags: 0
@@ -7561,6 +7742,7 @@ GameObject:
   - component: {fileID: 1305452129}
   - component: {fileID: 1305452131}
   - component: {fileID: 1305452130}
+  - component: {fileID: 1305452132}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -7687,6 +7869,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1305452128}
   m_CullTransparentMesh: 1
+--- !u!114 &1305452132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305452128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Want to change number
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &1319594947
 GameObject:
   m_ObjectHideFlags: 0
@@ -8622,6 +8820,7 @@ GameObject:
   - component: {fileID: 1558581196}
   - component: {fileID: 1558581198}
   - component: {fileID: 1558581197}
+  - component: {fileID: 1558581199}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8748,6 +8947,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1558581195}
   m_CullTransparentMesh: 1
+--- !u!114 &1558581199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1558581195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Resend
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &1571740237
 GameObject:
   m_ObjectHideFlags: 0
@@ -9236,6 +9451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   helps: {fileID: 0}
+  hammerEffect: {fileID: 0}
   currentMode: 0
   lastPosition: {x: 0, y: 0, z: 0}
   draggedBlock: {fileID: 0}
@@ -9607,6 +9823,7 @@ GameObject:
   - component: {fileID: 1770050108}
   - component: {fileID: 1770050110}
   - component: {fileID: 1770050109}
+  - component: {fileID: 1770050111}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -9733,6 +9950,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1770050107}
   m_CullTransparentMesh: 1
+--- !u!114 &1770050111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770050107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Please fill your details to create game account
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &1791823201
 GameObject:
   m_ObjectHideFlags: 0
@@ -9932,6 +10165,7 @@ GameObject:
   - component: {fileID: 1866351546}
   - component: {fileID: 1866351548}
   - component: {fileID: 1866351547}
+  - component: {fileID: 1866351549}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -10058,6 +10292,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866351545}
   m_CullTransparentMesh: 1
+--- !u!114 &1866351549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866351545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
+  localizationKey: Your Details
+  fontProfileName: font1
+  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &1872864505
 GameObject:
   m_ObjectHideFlags: 0
@@ -10841,7 +11091,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2105570195
 RectTransform:
   m_ObjectHideFlags: 0
