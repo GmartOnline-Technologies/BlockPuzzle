@@ -11,6 +11,9 @@ public class AppConfig : ScriptableObject
     [TextArea(3, 10)]
     public string apiAuthToken = "abcdefg1234";
 
+    [Header("Game API Identity")]
+    public string gameAppName = "busArena"; // Instructor value; change only to a backend-approved ID.
+
     [Header("App IDs")]
     public string androidAppId = "com.GmartOnline.BusArena";
 }

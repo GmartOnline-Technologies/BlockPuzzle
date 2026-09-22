@@ -18,9 +18,12 @@ public class TutorialOnboardingFlow : MonoBehaviour
     private float previousTimeScale;
     private readonly Dictionary<Behaviour, bool> inputStates = new Dictionary<Behaviour, bool>();
 
+    public GameObject loadingPanel;
+
     private void Awake()
     {
         if (languagePanel != null) languagePanel.SetActive(false);
+        if (loadingPanel != null) loadingPanel.SetActive(false);
         if (handGuide != null) handGuide.SetActive(false);
         if (gameplayInputs != null) foreach (Behaviour input in gameplayInputs) LockInput(input);
     }
@@ -36,6 +39,9 @@ public class TutorialOnboardingFlow : MonoBehaviour
             return;
         }
         ready = true;
+        // Register link / interrupted signup: do not force a completed tutorial again.
+        if (PlayerPrefs.GetInt("TutorialFinished", 0) == 1)
+        { OnTutorialCompleted(); return; }
         foreach (var entry in inputStates) if (entry.Key != null) entry.Key.enabled = entry.Value;
         if (handGuide != null) handGuide.SetActive(true);
     }
