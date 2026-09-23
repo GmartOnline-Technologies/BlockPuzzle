@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "82949580752",
+    "project_id": "block-arena-b2ae7",
+    "storage_bucket": "block-arena-b2ae7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82949580752:android:b01b3e0e1d3163393a3bd5",
+        "android_client_info": {
+          "package_name": "com.GmartOnline.BlockPuzzle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3rsojfvg6cWBCU_8wPhf_uqbbT0hmElI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
