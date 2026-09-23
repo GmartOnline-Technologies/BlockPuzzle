@@ -1,6 +1,8 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Firebase.App.Internal.csproj" />
+  <Project Path="OneSignal.UnityPackage.Editor.csproj" />
   <Project Path="Assembly-CSharp-firstpass.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="OneSignal.UnityPackage.Attribution.csproj" />
 </Solution>

@@ -13,6 +13,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-common:22.2.1' // Assets/Firebase/Editor/AppDependencies.xml:16
     implementation 'com.google.firebase:firebase-crashlytics-ndk:20.1.1' // Assets/Firebase/Editor/CrashlyticsDependencies.xml:16
     implementation 'com.google.firebase:firebase-crashlytics-unity:13.17.0' // Assets/Firebase/Editor/CrashlyticsDependencies.xml:23
+    implementation 'com.onesignal:OneSignal:5.9.6' // Assets/OneSignal/Editor/OneSignalAndroidDependencies.xml:6
 // Android Resolver Dependencies End
 **DEPS**}
 
