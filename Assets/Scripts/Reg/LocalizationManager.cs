@@ -93,7 +93,7 @@ public class LocalizationManager : MonoBehaviour
             if (key == "Play") return ".yuq";
 
             //---Out of Space--
-            if (key == "Out of Space") return "bv uÈ æ";
+            if (key == "Out of Space") return "bv uÈ";
             if (key == "Played Time") return ".ymq fj,dj";
 
             //---BUY Hammer---
@@ -107,7 +107,7 @@ public class LocalizationManager : MonoBehaviour
             //---BUY UNDOS---
             if (key == "BUY UNDOS") return "UNDO .kak";
             if (key == "Undo Counts") return "UNDO .dK";
-            if (key == "Insufficient Keys") return "Keys uÈ";
+            if (key == "Insufficient Keys") return "h;=re m%udkj;a ke;";
 
             //---Menu---
             if (key == "Menu") return "fukqj";

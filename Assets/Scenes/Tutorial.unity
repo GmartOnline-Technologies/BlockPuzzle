@@ -153,10 +153,10 @@ RectTransform:
   - {fileID: 578414568}
   m_Father: {fileID: 530322087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 418.86752, y: -78.235}
-  m_SizeDelta: {x: 111.42834, y: 156.47}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &10702808
 MonoBehaviour:
@@ -1083,8 +1083,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -58.682964, y: -39.999947}
-  m_SizeDelta: {x: 333.03, y: 50}
+  m_AnchoredPosition: {x: -1.8898, y: -39.999947}
+  m_SizeDelta: {x: 446.62, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &119867757
 MonoBehaviour:
@@ -1889,10 +1889,10 @@ RectTransform:
   - {fileID: 2083618532}
   m_Father: {fileID: 530322087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 328.0792, y: -78.235}
-  m_SizeDelta: {x: 111.42834, y: 156.47}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &295368799
 MonoBehaviour:
@@ -2276,7 +2276,6 @@ GameObject:
   - component: {fileID: 371482615}
   - component: {fileID: 371482617}
   - component: {fileID: 371482616}
-  - component: {fileID: 371482618}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2403,22 +2402,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 371482614}
   m_CullTransparentMesh: 1
---- !u!114 &371482618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 371482614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
-  localizationKey: OTP Number
-  fontProfileName: font1
-  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
-  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!1 &375762441
 GameObject:
   m_ObjectHideFlags: 0
@@ -5327,7 +5310,6 @@ GameObject:
   - component: {fileID: 842644574}
   - component: {fileID: 842644576}
   - component: {fileID: 842644575}
-  - component: {fileID: 842644577}
   m_Layer: 5
   m_Name: warning_Text
   m_TagString: Untagged
@@ -5454,22 +5436,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842644573}
   m_CullTransparentMesh: 1
---- !u!114 &842644577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 842644573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
-  localizationKey: Please enter OTP number we text to your number
-  fontProfileName: font1
-  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
-  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &851292654
 GameObject:
   m_ObjectHideFlags: 0
@@ -5685,10 +5651,10 @@ RectTransform:
   - {fileID: 1763548495}
   m_Father: {fileID: 530322087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 55.71417, y: -78.235}
-  m_SizeDelta: {x: 111.42834, y: 156.47}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &877382354
 MonoBehaviour:
@@ -5865,7 +5831,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -37}
-  m_SizeDelta: {x: 378.5, y: 132.72}
+  m_SizeDelta: {x: 698.56, y: 132.72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &886023059
 MonoBehaviour:
@@ -6768,10 +6734,10 @@ RectTransform:
   - {fileID: 1792607275}
   m_Father: {fileID: 530322087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 509.65585, y: -78.235}
-  m_SizeDelta: {x: 111.42834, y: 156.47}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1098840358
 MonoBehaviour:
@@ -7941,7 +7907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1490353562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8059,10 +8025,10 @@ RectTransform:
   - {fileID: 743517131}
   m_Father: {fileID: 530322087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 237.29085, y: -78.235}
-  m_SizeDelta: {x: 111.42834, y: 156.47}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1541443271
 MonoBehaviour:
@@ -8357,7 +8323,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1545666712
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8742,10 +8708,10 @@ RectTransform:
   - {fileID: 2013569533}
   m_Father: {fileID: 530322087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 146.5025, y: -78.235}
-  m_SizeDelta: {x: 111.42834, y: 156.47}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1571740239
 MonoBehaviour:
@@ -9716,7 +9682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
-  localizationKey: Please fill your details to create game account
+  localizationKey: Please enter OTP number we text to your number
   fontProfileName: font1
   englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
   sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
@@ -10845,7 +10811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2105570195
 RectTransform:
   m_ObjectHideFlags: 0

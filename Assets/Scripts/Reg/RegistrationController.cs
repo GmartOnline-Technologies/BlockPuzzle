@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 using System.Text;
 using System.Collections;
 using System;
-// using Firebase.Analytics;
+using Firebase.Analytics;
 // using Facebook.Unity;
 using UnityEngine.SceneManagement;
 
@@ -125,26 +125,19 @@ public class RegistrationController : MonoBehaviour
         SetupSubscriptionInfo();
     }
 
-    // private void LogGameEvent(string eventName, string parameterName = null, string parameterValue = null)
-    // {
-    //     // 1. Log to Firebase
-    //     if (string.IsNullOrEmpty(parameterName))
-    //         FirebaseAnalytics.LogEvent(eventName);
-    //     else
-    //         FirebaseAnalytics.LogEvent(eventName, parameterName, parameterValue);
-
-    //     // 2. Log to Facebook (Safe Wrapper)
-    //     if (FB.IsInitialized)
-    //     {
-    //             FB.LogAppEvent(eventName);
-    //     }
-    // }
+    private void LogGameEvent(string eventName, string parameterName = null, string parameterValue = null)
+    {
+        // 1. Log to Firebase
+        if (string.IsNullOrEmpty(parameterName))
+            FirebaseAnalytics.LogEvent(eventName);
+        else
+            FirebaseAnalytics.LogEvent(eventName, parameterName, parameterValue);
+    }
 
     void OnOtpValueChanged(string val)
     {
         RefreshButtons();
-        // Preserve the instructor's automatic verification at six digits.
-        if (!busy && otpPanel != null && otpPanel.activeInHierarchy && IsValidOtp()) OnVerifyClicked();
+        // Verification starts only when the player clicks the Continue button.
     }
 
     bool IsValidOtp()
@@ -361,7 +354,7 @@ public class RegistrationController : MonoBehaviour
                     if (response == null) throw new Exception("Empty server response");
                     if (response.statusCode == "S1000") 
                     {
-                        //LogGameEvent("Pin_sent", "status", "success");
+                        LogGameEvent("Pin_sent", "status", "success");
                         if (string.IsNullOrEmpty(response.referenceNo)) throw new Exception("Missing OTP reference");
                         referenceNo = response.referenceNo;
                         ShowToast("OTP Sent Successfully!");
@@ -369,7 +362,7 @@ public class RegistrationController : MonoBehaviour
                     }
                     else if (response.statusCode == "S2000")
                     {
-                        //LogGameEvent("auth_direct_login", "mode", "S2000");
+                        LogGameEvent("auth_direct_login", "mode", "S2000");
                         Debug.Log("[Auth] User already subscribed. Logging in directly.");
                         ShowToast("Welcome back!");
                         CompleteRegistration(tempUsername, currentMobile10Digit, response.referenceNo, response.referenceNo);
@@ -428,7 +421,7 @@ public class RegistrationController : MonoBehaviour
                     if (response == null) throw new Exception("Empty server response");
                     if (response.statusCode == "S1000")
                     {
-                        //LogGameEvent("auth_pin_result", "status", "success");
+                        LogGameEvent("auth_pin_result", "status", "success");
                         subscriptionId = response.subscriptionId;
                         ShowToast("Verified! Logging in...");
                         CompleteRegistration(tempUsername, currentMobile10Digit, subscriptionId, referenceNo);

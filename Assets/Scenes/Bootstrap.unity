@@ -3462,7 +3462,6 @@ GameObject:
   - component: {fileID: 667576914}
   - component: {fileID: 667576913}
   - component: {fileID: 667576911}
-  - component: {fileID: 667576912}
   m_Layer: 5
   m_Name: warning_Text
   m_TagString: Untagged
@@ -3562,22 +3561,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &667576912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 667576910}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
-  localizationKey: Please enter OTP number we text to your number
-  fontProfileName: font1
-  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
-  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!222 &667576913
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5074,7 +5057,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &969233959
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6867,7 +6850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
-  localizationKey: Please fill your details to create game account
+  localizationKey: Please enter OTP number we text to your number
   fontProfileName: font1
   englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
   sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
@@ -9226,7 +9209,6 @@ GameObject:
   - component: {fileID: 1530951945}
   - component: {fileID: 1530951948}
   - component: {fileID: 1530951947}
-  - component: {fileID: 1530951946}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -9253,22 +9235,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 132}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1530951946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1530951944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b689a469284a4f644adcbd4ce9199395, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
-  localizationKey: OTP Number
-  fontProfileName: font1
-  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
-  sinhalaMaterial: {fileID: 2100000, guid: 83c761ec5f3d27343a273d9e64fe6f5d, type: 2}
 --- !u!114 &1530951947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10406,7 +10372,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1796470710
 RectTransform:
   m_ObjectHideFlags: 0
