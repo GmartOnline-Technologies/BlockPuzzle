@@ -183,7 +183,7 @@ public class SettingsManager : MonoBehaviour
     public void OnConfirmDeactivate()
     {
         if (Busy || view != View.Deactivate || home == null) return;
-        if (home.BeginTransition(tutorialScene, () => ResetAccount(true))) { HideCards(); HideDimmer(); }
+        if (home.BeginTransition(bootstrapScene, () => ResetAccount(true))) { HideCards(); HideDimmer(); }
     }
     
     // Runtime UI layers preserve the boards' original Body parent and positions.
@@ -259,30 +259,19 @@ public class SettingsManager : MonoBehaviour
     
     private static void ResetAccount(bool deactivate)
     {
-        if (deactivate)
-        {
-            // Matches the ACTIVE instructor path: local reset, NOT server unsubscribe/delete.
-            int language = PlayerPrefs.GetInt("SelectedLanguage", 0);
-            int sound = PlayerPrefs.GetInt("GameSound", 1);
-            int music = PlayerPrefs.GetInt("GameMusic", 1);
-            int tutorial = PlayerPrefs.GetInt("TutorialFinished", 0);
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.SetInt("SelectedLanguage", language);
-            PlayerPrefs.SetInt("GameSound", sound);
-            PlayerPrefs.SetInt("GameMusic", music); // Preserve the new independent setting too.
-            PlayerPrefs.SetInt("TutorialFinished", tutorial);
-        }
-        else
-        {
-            foreach (string key in new[] { "AccessToken", "UserId", "Username", "Mobile", "SubscriberId", "ReferenceNo" })
-                PlayerPrefs.DeleteKey(key);
-        }
+        // Both confirmation buttons now sign out only. Per-user progress stays saved.
+        PlayerPrefs.SetInt("Auth_LoggedOut", 1);
+        foreach (string key in new[] { "AccessToken", "UserId", "Username", "Mobile", "SubscriberId", "ReferenceNo" })
+            PlayerPrefs.DeleteKey(key);
         PlayerPrefs.SetInt("IsRegisteredUser", 0);
         PlayerPrefs.SetInt("IsLoggedOut", 1);
-        PlayerPrefs.SetString("AuthMessage", deactivate ? "Account reset on this device." : "Successfully Logged Out.");
+        PlayerPrefs.SetString("AuthMessage", "Successfully Logged Out. Progress saved.");
         PlayerPrefs.Save();
+        Debug.Log(deactivate
+            ? "[Auth] Deactivate button: signed out; saved progress preserved."
+            : "[Auth] Logged out; saved progress preserved.");
     }
-    
+
     private static void Active(GameObject target, bool active) { if (target != null) target.SetActive(active); }
     
     private void OnDisable()

@@ -46,6 +46,21 @@ public static class CoinWallet
         if (CoinSync.Instance != null) CoinSync.Instance.RequestSync();
         return true;
     }
+    // A downloaded total is NOT a newly earned reward and must never be uploaded again.
+    public static bool ApplyServerTotal(int user, int serverTotal)
+    {
+        if (user <= 0 || user != UserId || !HasAccount || serverTotal < 0) return false;
+        Record value = Read(user);
+        // A total alone cannot prove whether an interrupted POST reached the server.
+        if (value.inFlight > 0) return false;
+        long combined = (long)serverTotal + value.pending;
+        if (combined > int.MaxValue) return false;
+        value.total = (int)combined;
+        Save(user, value);
+        Changed?.Invoke(value.total);
+        return true;
+    }
+
     public static void RefreshActiveAccount()
     {
         int total = Total;

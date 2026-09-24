@@ -12,6 +12,44 @@ public static class LeaderboardAPI
     [Serializable] public class ScoreSubmission { public int userId, points; public string platformName, gameType; }
     [Serializable] public class LeaderboardEntryAPI { public int placement, userId, points; public string username, country; }
     [Serializable] public class LeaderboardRoot { public List<LeaderboardEntryAPI> leaderboard; }
+    [Serializable] private class TotalPointsResponse
+    {
+        public int userId;
+        public int totalPoints;
+        public string gameType;
+    }
+
+    public static IEnumerator FetchTotalForAccount(int user, string token,
+        Action<int> onSuccess, Action<string> onFailure)
+    {
+        if (Config == null || string.IsNullOrWhiteSpace(Config.gameBaseAPIUrl) ||
+            user <= 0 || string.IsNullOrWhiteSpace(token))
+        { onFailure?.Invoke("Assign AppConfig and log in to load your score."); yield break; }
+        string url = Config.gameBaseAPIUrl.Trim().TrimEnd('/') +
+            "/api/users/points/total?gameType=" + GameType;
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            request.timeout = 20;
+            request.SetRequestHeader("Authorization", "Bearer " + token);
+            yield return request.SendWebRequest();
+            if (request.result != UnityWebRequest.Result.Success)
+            { onFailure?.Invoke("Could not load your score (HTTP " + request.responseCode + "). Saved progress kept."); yield break; }
+            // Missing totalPoints must not be interpreted as a legitimate zero.
+            var response = new TotalPointsResponse { userId = -1, totalPoints = -1 };
+            bool valid = false;
+            try
+            {
+                JsonUtility.FromJsonOverwrite(request.downloadHandler.text, response);
+                valid = response.userId == user && response.totalPoints >= 0 &&
+                    string.Equals(response.gameType, GameType, StringComparison.Ordinal);
+            }
+            catch (Exception) { }
+            if (!valid)
+            { onFailure?.Invoke("Score response is invalid or belongs to a different account/game. Saved progress kept."); yield break; }
+            onSuccess?.Invoke(response.totalPoints);
+        }
+    }
+
     private static bool Ready(out string error)
     {
         error = "";
