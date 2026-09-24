@@ -48,6 +48,8 @@ public class RegistrationController : MonoBehaviour
     public Button resendOtpButton;
     public TextMeshProUGUI otpMessageText; 
 
+    private readonly Color defaultOtpMessageColor = new Color32(0x75, 0x2D, 0x0C, 0xFF);
+
     // Internal State
     private string currentMobile10Digit;
     private string tempUsername;
@@ -100,6 +102,7 @@ public class RegistrationController : MonoBehaviour
     void Awake() 
     { 
         Instance = this; 
+        if (otpMessageText != null) otpMessageText.color = defaultOtpMessageColor;
         if(detailsPanel != null) detailsPanel.SetActive(false);
         if(otpPanel != null) otpPanel.SetActive(false);
         if(welcomePanel != null) welcomePanel.SetActive(false);
@@ -342,7 +345,7 @@ public class RegistrationController : MonoBehaviour
                 Debug.LogError($"[Auth] Error: {www.error} : {www.downloadHandler.text}");
 
                 if (detailsPanel.activeSelf) ShowWarning("Connection Failed.");
-                else ShowToast("Connection Failed.");
+                else ShowWarning("Connection Failed.");
             }
             else
             {
@@ -370,7 +373,7 @@ public class RegistrationController : MonoBehaviour
                     else
                     {
                         if (detailsPanel.activeSelf) ShowWarning(response.statusDetail);
-                        else ShowToast(response.statusDetail);
+                        else ShowWarning(response.statusDetail);
                     }
                 }
                 catch (Exception e)
@@ -408,7 +411,7 @@ public class RegistrationController : MonoBehaviour
 
             if (www.result != UnityWebRequest.Result.Success)
             {
-                ShowToast("Verification Failed.");
+                ShowWarning("Verification Failed.");
                 Debug.LogError(www.downloadHandler.text);
             }
             else
@@ -526,7 +529,11 @@ public class RegistrationController : MonoBehaviour
 
         detailsPanel.SetActive(false);
         otpPanel.SetActive(true);
-        if (otpMessageText != null) otpMessageText.text = $"Enter OTP sent to\n{currentMobile10Digit}";
+        if (otpMessageText != null)
+        {
+            otpMessageText.color = defaultOtpMessageColor;
+            otpMessageText.text = $"Enter OTP sent to\n{currentMobile10Digit}";
+        }
         
         if(singleOtpInput != null)
         {
@@ -639,7 +646,8 @@ public class RegistrationController : MonoBehaviour
 
         if (otpPanel != null && otpPanel.activeSelf && otpMessageText != null)
         {
-            otpMessageText.text = redMessage;
+            otpMessageText.color = Color.red;
+            otpMessageText.text = message;
             otpMessageText.transform.DOShakePosition(0.4f, 10).SetUpdate(true);
         }
         else if (detailsWarningText != null)
@@ -656,7 +664,11 @@ public class RegistrationController : MonoBehaviour
     private void ShowToast(string message)
     {
         Debug.Log($"[TOAST] {message}");
-        if (otpPanel != null && otpPanel.activeSelf && otpMessageText != null) otpMessageText.text = message;
+        if (otpPanel != null && otpPanel.activeSelf && otpMessageText != null)
+        {
+            otpMessageText.color = defaultOtpMessageColor;
+            otpMessageText.text = message;
+        }
         else if (detailsWarningText != null) detailsWarningText.text = message;
         // Shake active panel
         if (detailsPanel != null && detailsPanel.activeSelf) detailsPanel.transform.DOShakePosition(0.3f, 5, 90).SetUpdate(true);

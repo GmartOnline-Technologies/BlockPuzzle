@@ -46,11 +46,12 @@ public class GameOverController : MonoBehaviour
         { Debug.LogError("Assign Game, Modal Root and Game Over Board.", this); return; }
         shown = true;
         game.SetGameOver();
+        game.SaveRoundPoints();
         BlockPuzzleAudio.Play(BlockPuzzleAudio.Effect.GameOver);
         int seconds = Mathf.Max(0, Mathf.FloorToInt(playedSeconds));
         if (playedTimeText != null)
             playedTimeText.text = (seconds / 60).ToString("00") + ":" + (seconds % 60).ToString("00");
-        // Rewards are already saved. Do not award the round total again.
+        // SaveRoundPoints banks this round once; this label only displays it.
         if (collectedCoinsText != null) collectedCoinsText.text = game.score.ToString();
         modalRoot.SetActive(true);
         gameOverBoard.gameObject.SetActive(true);
@@ -65,6 +66,8 @@ public class GameOverController : MonoBehaviour
         if (leaving) return;
         if (!Application.CanStreamedLevelBeLoaded(sceneName))
         { Debug.LogError("Add scene to build list: " + sceneName, this); return; }
+        // Retry a failed local save, but never award an already-saved round twice.
+        if (game != null && !game.SaveRoundPoints()) return;
         leaving = true;
         try { SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single); }
         catch (Exception e) { leaving = false; Debug.LogError("Scene load failed: " + e.Message, this); }

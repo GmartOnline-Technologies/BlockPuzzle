@@ -144,12 +144,13 @@ public class GamePauseController : MonoBehaviour
     }
     public void ConfirmQuit()
     {
-        if (page == Page.Quit && !leaving) LoadScene(homeSceneName);
+        if (page == Page.Quit && !leaving) LoadScene(homeSceneName, true);
     }
-    private void LoadScene(string sceneName)
+    private void LoadScene(string sceneName, bool saveRound = false)
     {
         if (!Application.CanStreamedLevelBeLoaded(sceneName))
         { Debug.LogError("Add scene to the build list: " + sceneName, this); return; }
+        if (saveRound && (game == null || !game.SaveRoundPoints())) return;
         leaving = true;
         // Keep gameplay frozen until the current scene is replaced. No restart-in-place
         // while a line-clear coroutine may still own references to the old board.

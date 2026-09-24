@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     public ScoreFlyAnimation scoreFlyAnimation;
 
     private int landedScoreTarget;
+    private int savedRoundPoints;
+    private int roundUserId;
+    private bool roundUsesWallet;
     public int ScoreSessionVersion { get; private set; }
 
     [HideInInspector] public bool gameOver = false;
@@ -27,8 +30,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int bestScore;
     [HideInInspector] public int score = 0;
 
-    private bool UsesWallet => gameObject.scene.name == "GameScene" && CoinWallet.HasAccount;
-    private int DisplayTotal => UsesWallet ? CoinWallet.Total : score;
+    // The game counter shows this round; Home shows the saved account wallet.
+    private int DisplayTotal => score;
     private void Start() { FinishScorePresentation(); }
 
     public static int GetLineReward(int lines)
@@ -53,9 +56,8 @@ public class GameManager : MonoBehaviour
         int points = GetLineReward(lines);
         if (points == 0 || gameOver) return;
 
-        // The real total changes once. Presentation catches up when the reward lands.
+        // Keep rewards in this round until Game Over or a confirmed Quit to Home.
         score += points;
-        if (UsesWallet) CoinWallet.AddEarned(points);
         if (score > bestScore)
         {
             bestScore = score;
@@ -77,6 +79,28 @@ public class GameManager : MonoBehaviour
                 PresentScore(totalAfterClear);
         });
         if (!started) PresentScore(totalAfterClear);
+    }
+
+    public bool SaveRoundPoints()
+    {
+        int amount = score - savedRoundPoints;
+        if (amount <= 0 || !roundUsesWallet) return true;
+        if (!CoinWallet.HasAccount || CoinWallet.UserId != roundUserId)
+        {
+            Debug.LogError("Cannot save this round to a different account.", this);
+            return false;
+        }
+        // Mark before the wallet event fires so repeated callbacks cannot award twice.
+        int previouslySaved = savedRoundPoints;
+        savedRoundPoints = score;
+        if (!CoinWallet.AddEarned(amount))
+        {
+            savedRoundPoints = previouslySaved;
+            Debug.LogError("Round points could not be saved. Please try again.", this);
+            return false;
+        }
+        Debug.Log("[Score] Saved " + amount + " round points to the account.", this);
+        return true;
     }
 
     private void PresentScore(int total)
@@ -118,6 +142,7 @@ public class GameManager : MonoBehaviour
         firstBeatenScore = continueGame = true;
         ScoreSessionVersion++;
         score = 0;
+        savedRoundPoints = 0;
         FinishScorePresentation();
 
         for (int y = 0; y < BoardManager.BOARD_SIZE; y++)
@@ -232,6 +257,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         if (!ins) ins = this;
+        roundUserId = CoinWallet.UserId;
+        roundUsesWallet = gameObject.scene.name == "GameScene" && CoinWallet.HasAccount;
         Application.targetFrameRate = 60;
         bestScore = ProgressManager.GetBestScore();
         landedScoreTarget = DisplayTotal;

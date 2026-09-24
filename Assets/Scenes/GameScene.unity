@@ -2057,7 +2057,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &262985351
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3122,7 +3122,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &419640119
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11489,8 +11489,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScoreFlyAnimation
   coinSprite: {fileID: 21300000, guid: a647b618f6448ba489ca185484a1c78d, type: 3}
   rewardColor: {r: 0.9622642, g: 0.84078103, b: 0.31772864, a: 1}
-  popupSizeMultiplier: 2
-  holdDuration: 0.15
+  popupSizeMultiplier: 2.5
+  holdDuration: 0.18
   flightDuration: 0.55
   arcHeight: 0.14
 --- !u!1 &1574808201
@@ -14544,7 +14544,7 @@ MonoBehaviour:
   localizationKey: BUY UNDOS
   fontProfileName: font1
   englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
-  sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
+  sinhalaMaterial: {fileID: -3660126489296657951, guid: aa653ad5968a9c748b50624d07727ab4, type: 2}
 --- !u!1 &2020838498
 GameObject:
   m_ObjectHideFlags: 0
