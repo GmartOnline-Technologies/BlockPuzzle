@@ -4577,7 +4577,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 658038048}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 971724853}
+        m_TargetAssemblyTypeName: RegistrationController, Assembly-CSharp
+        m_MethodName: OnBackClickedToDetails
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &658038048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6200,7 +6212,7 @@ MonoBehaviour:
   otpDigits: {fileID: 128985380}
   requestTimeoutSeconds: 30
   config: {fileID: 11400000, guid: 01eecd217516f9d40b92f8f672c1fb70, type: 2}
-  registrationPanel: {fileID: 0}
+  registrationPanel: {fileID: 2115590812}
   detailsPanel: {fileID: 2115590812}
   otpPanel: {fileID: 1545666711}
   loadingOverlay: {fileID: 308327264}

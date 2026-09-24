@@ -81,7 +81,7 @@ public class LocalizationManager : MonoBehaviour
             if (key == "Continue") return "È.gu hkak";
             
             //---Subscription OTP---
-            if (key == "Please enter OTP number we text to your number") return "f*daka tlg tjmq ryia wxlh ^OTP& fldgkak";
+            if (key == "Please enter OTP number we text to your number") return "f*daka tlg tjmq ryia wxlh fldgkak";
             if (key == "OTP Number") return "ryia wxlh ^OTP&";
             if (key == "Want to change number") return "f*daka kïn¾ tl udre lrkak ´fko@";
             if (key == "Change number") return "kïn¾ tl udre lrkak";
@@ -105,8 +105,8 @@ public class LocalizationManager : MonoBehaviour
             if (key == "Rotator Count") return "frdfÜg¾ia .dK";
 
             //---BUY UNDOS---
-            if (key == "BUY UNDOS") return "UNDO .kak";
-            if (key == "Undo Counts") return "UNDO .dK";
+            if (key == "BUY UNDOS") return "kej; yerjqï .kak";
+            if (key == "Undo Counts") return "kej; yerjqï .dK";
             if (key == "Insufficient Keys") return "h;=re m%udkj;a ke;";
 
             //---Menu---

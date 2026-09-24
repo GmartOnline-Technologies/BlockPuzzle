@@ -380,6 +380,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CoinSync
   config: {fileID: 11400000, guid: 01eecd217516f9d40b92f8f672c1fb70, type: 2}
   batchDelay: 1
+  refreshInterval: 30
 --- !u!4 &48976021
 Transform:
   m_ObjectHideFlags: 0
@@ -1622,7 +1623,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
   localizationKey: Want to change number
   fontProfileName: font1
-  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
   sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!114 &243417466
 MonoBehaviour:
@@ -2152,7 +2153,7 @@ MonoBehaviour:
   otpDigits: {fileID: 1338040599}
   requestTimeoutSeconds: 30
   config: {fileID: 11400000, guid: 01eecd217516f9d40b92f8f672c1fb70, type: 2}
-  registrationPanel: {fileID: 0}
+  registrationPanel: {fileID: 1295539432}
   detailsPanel: {fileID: 1295539432}
   otpPanel: {fileID: 395336156}
   loadingOverlay: {fileID: 880565560}
@@ -2412,14 +2413,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.14117648, g: 0.14117648, b: 0.14117648, a: 0.78431374}
+  m_Color: {r: 0.38039216, g: 0.38039216, b: 0.38039216, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 05eefc041eb28834a945ea41aeaa115d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3498,8 +3499,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278988149
-  m_fontColor: {r: 0.45882353, g: 0.1764706, b: 0.047058824, a: 1}
+    rgba: 4278190335
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3522,7 +3523,7 @@ MonoBehaviour:
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 28
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3912,7 +3913,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 773017893}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 307269584}
+        m_TargetAssemblyTypeName: RegistrationController, Assembly-CSharp
+        m_MethodName: OnBackClickedToDetails
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &780597053
 GameObject:
   m_ObjectHideFlags: 0
@@ -6852,7 +6865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
   localizationKey: Please enter OTP number we text to your number
   fontProfileName: font1
-  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
   sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!114 &1205146353
 MonoBehaviour:
@@ -8340,7 +8353,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
   localizationKey: Your Details
   fontProfileName: font1
-  englishMaterial: {fileID: 2100000, guid: e0de478876eba274c857d653249a1d41, type: 2}
+  englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
   sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!114 &1430840872
 MonoBehaviour:

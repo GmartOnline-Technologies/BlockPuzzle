@@ -3,6 +3,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 // One real input receives keyboard/paste/backspace; six existing inputs are display-only.
 public class OtpDigitInputs : MonoBehaviour

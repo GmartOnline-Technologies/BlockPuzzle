@@ -633,19 +633,23 @@ public class RegistrationController : MonoBehaviour
     private void ShowWarning(string message)
     {
         Debug.Log($"[WARNING] {message}");
+        
+        // Wrap the message in red color tags
+        string redMessage = $"<color=red>{message}</color>";
+
         if (otpPanel != null && otpPanel.activeSelf && otpMessageText != null)
         {
-            otpMessageText.text = message;
+            otpMessageText.text = redMessage;
             otpMessageText.transform.DOShakePosition(0.4f, 10).SetUpdate(true);
         }
         else if (detailsWarningText != null)
         {
-            detailsWarningText.text = message;
+            detailsWarningText.text = redMessage;
             detailsWarningText.transform.DOShakePosition(0.4f, 10).SetUpdate(true);
         }
         else
         {
-            ShowToast(message);
+            ShowToast(message); // Toasts usually stay white, so we pass the original message
         }
     }
 
