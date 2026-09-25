@@ -2775,13 +2775,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d229d05fce19f614ea0afff44b32f744, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraShake
-  oneLineStrength: 0.1
-  oneLineDuration: 0.16
-  twoLineStrength: 0.13
-  twoLineDuration: 0.24
-  threePlusStrength: 0.15
-  threePlusDuration: 0.34
-  frequency: 38
+  oneLineStrength: 0.15
+  oneLineDuration: 0.15
+  twoLineStrength: 0.17
+  twoLineDuration: 0.25
+  threePlusStrength: 0.19
+  threePlusDuration: 0.35
+  frequency: 40
 --- !u!1 &384957846
 GameObject:
   m_ObjectHideFlags: 0
@@ -12070,10 +12070,10 @@ MonoBehaviour:
   chargeTime: 0.09
   rippleStep: 0.018
   shrinkTime: 0.16
-  pulseScale: 1.12
-  oneLineSparks: 4
-  twoLineSparks: 5
-  threePlusSparks: 6
+  pulseScale: 1.15
+  oneLineSparks: 5
+  twoLineSparks: 7
+  threePlusSparks: 8
 --- !u!114 &1687254883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12086,7 +12086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558a31df4c2479a46ad3afc4492f3cbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LineClearEffects
-  maxVisuals: 144
+  maxVisuals: 150
   beamColor: {r: 0.35, g: 0.9, b: 1, a: 0.65}
   showComboText: 1
   goodPopupSprite: {fileID: 21300000, guid: e86c24a037a7f054b8795efc61e9ae9a, type: 3}

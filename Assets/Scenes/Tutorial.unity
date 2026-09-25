@@ -1807,8 +1807,8 @@ MonoBehaviour:
   m_ReadOnly: 0
   m_RichText: 1
   m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
-  m_ResetOnDeActivation: 1
+  m_OnFocusSelectAll: 0
+  m_ResetOnDeActivation: 0
   m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -6209,7 +6209,7 @@ MonoBehaviour:
   startButton: {fileID: 1683243165}
   loadingScreen: {fileID: 1887717351}
   otpDigits: {fileID: 128985380}
-  requestTimeoutSeconds: 30
+  requestTimeoutSeconds: 20
   config: {fileID: 11400000, guid: 01eecd217516f9d40b92f8f672c1fb70, type: 2}
   registrationPanel: {fileID: 2115590812}
   detailsPanel: {fileID: 2115590812}
@@ -8916,8 +8916,8 @@ MonoBehaviour:
   m_ReadOnly: 0
   m_RichText: 1
   m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
-  m_ResetOnDeActivation: 1
+  m_OnFocusSelectAll: 0
+  m_ResetOnDeActivation: 0
   m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -9271,7 +9271,7 @@ MonoBehaviour:
   goodPopupSprite: {fileID: 21300000, guid: e86c24a037a7f054b8795efc61e9ae9a, type: 3}
   greatPopupSprite: {fileID: 21300000, guid: da0f534ceed3e93418165f51eaae24da, type: 3}
   popupWidth: 0.8
-  popupDuration: 0.8
+  popupDuration: 1.1
   popupOffsetY: 12
 --- !u!114 &1687254884
 MonoBehaviour:
@@ -10668,7 +10668,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2105570195
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10889,9 +10889,9 @@ SceneRoots:
   - {fileID: 851292655}
   - {fileID: 566857256}
   - {fileID: 1101131167}
-  - {fileID: 971724855}
   - {fileID: 1362182595}
   - {fileID: 61851310}
   - {fileID: 529310187}
+  - {fileID: 971724855}
   - {fileID: 1687254878}
   - {fileID: 597670561}
