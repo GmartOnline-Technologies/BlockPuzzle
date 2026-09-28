@@ -101,8 +101,8 @@ public class LocalizationManager : MonoBehaviour
             if (key == "Hammer Count") return "ñá .dK";
 
             //---BUY ROTATORS---
-            if (key == "BUY ROTATORS") return "frdfÜg¾ia .kak";
-            if (key == "Rotator Count") return "frdfÜg¾ia .dK";
+            if (key == "BUY ROTATORS") return "lrljk .kak";
+            if (key == "Rotator Count") return "lrljk .dK";
 
             //---BUY UNDOS---
             if (key == "BUY UNDOS") return "kej; yerjqï .kak";
@@ -120,7 +120,7 @@ public class LocalizationManager : MonoBehaviour
             if (key == "Language") return "NdIdj";
             if (key == "Please select your language to continue. You can change later") return "bÈßhg hdu i|yd lreKdlr Tfí NdIdj f;darkak' Tng miqj th fjkia l< yel'";
             if (key == "Logout") return "whska fjkak";
-            if (key == "Delete Account") return ".sKqu whska lrkak";
+            if (key == "Delete Account") return ".skqu wl%Sh lrkak";
 
             //---Quit ?---
             if (key == "Quit ?") return "whska fjuqo @";
@@ -138,8 +138,8 @@ public class LocalizationManager : MonoBehaviour
             if (key == "Key Store") return "h;=re fIdma tl";
 
             //---Delete account---
-            if (key == "Delete account") return ".sKqu whska lrkak";
-            if (key == "Do you want to delete account ?") return "Thdg úYajdio @ Thdf.a o;a; Tlafldu uelS,d hhs'";
+            if (key == "Delete account") return ".skqu wl%Sh lrkak";
+            if (key == "Do you want to delete account ?") return "Thdg úYajdio@ Thdf.a o;a; Tlafldu uelS,d hhs'";
 
             //---Logout---
             if (key == "Log Out ?") return "whska fjuqo@";
@@ -193,7 +193,7 @@ public class LocalizationManager : MonoBehaviour
             if (key == "Played Time") return "Played Time";
 
             //---BUY Hammer---
-            if (key == "BUY Hammer") return "BUY Hammer";
+            if (key == "BUY Hammer") return "BUY HAMMER";
             if (key == "Hammer Count") return "Hammer Count";
 
             //---BUY ROTATORS---

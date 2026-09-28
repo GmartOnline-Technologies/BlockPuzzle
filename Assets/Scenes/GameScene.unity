@@ -967,7 +967,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &162134951
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1903,7 +1903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalizedText
   localizationKey: Restart
-  fontProfileName: font1
+  fontProfileName: Menu
   englishMaterial: {fileID: 2100000, guid: 4cc784b6c2abe534fbc3934f6391e694, type: 2}
   sinhalaMaterial: {fileID: 2100000, guid: e44c4dfbd1829aa4aafea11d9d4e2765, type: 2}
 --- !u!1 &260989010
@@ -3223,7 +3223,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -83.05002}
+  m_AnchoredPosition: {x: 0, y: -93}
   m_SizeDelta: {x: 488.41, y: 86.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &420006507
@@ -4076,7 +4076,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &547135864
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9532,7 +9532,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1232164707
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10594,7 +10594,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1396031408
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14426,7 +14426,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -83.05002}
+  m_AnchoredPosition: {x: 0, y: -93}
   m_SizeDelta: {x: 488.41, y: 86.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2020569588
@@ -14734,7 +14734,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -83.05002}
+  m_AnchoredPosition: {x: 0, y: -93}
   m_SizeDelta: {x: 488.41, y: 86.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2033110573
@@ -14946,7 +14946,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2062481399
 RectTransform:
   m_ObjectHideFlags: 0
