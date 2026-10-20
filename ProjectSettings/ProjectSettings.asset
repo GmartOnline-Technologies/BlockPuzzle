@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: GmartOnline
-  productName: Block Puzzle
+  productName: Block Arena
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -399,27 +399,37 @@ PlayerSettings:
       m_SubKind: App Store
   - m_BuildTarget: Android
     m_Icons:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 44796f2e653bc6c4c9090cbe0688b44c, type: 3}
+      - {fileID: 2800000, guid: 4e2c42ef057fe4f4fbe8708aef862fc9, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 0820fa44df34eb74a915d83789871c99, type: 3}
+      - {fileID: 2800000, guid: 215fce3fb2ad7e84791f23a7501cba07, type: 3}
       m_Width: 324
       m_Height: 324
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: e6a160ec815dc914da49b30890d27cb8, type: 3}
+      - {fileID: 2800000, guid: 2e568f2fd6c333140b685fac062661cc, type: 3}
       m_Width: 216
       m_Height: 216
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 22eb881bd0a4cff4e9da0dba8c2354d1, type: 3}
+      - {fileID: 2800000, guid: 06df3b417be46d64eafafdc1e764203d, type: 3}
       m_Width: 162
       m_Height: 162
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 856b5ea668e11854fa631056504d8183, type: 3}
+      - {fileID: 2800000, guid: 01fdf6639534b024fb25b0249920aa17, type: 3}
       m_Width: 108
       m_Height: 108
       m_Kind: 2

@@ -1,13 +1,18 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Networking; // Required for the API call
 
 // Replaces the supplied instructor script. Keep on an always-active HomeControllers root.
 public class SettingsManager : MonoBehaviour
 {
+    [Header("API Config")]
+    public AppConfig config; // --- NEW: Added API Config for backend calls ---
+
     [Header("References")]
     public HomeSceneController home;
     public GameAudioSettings audioSettings;
@@ -180,10 +185,57 @@ public class SettingsManager : MonoBehaviour
         if (home.BeginTransition(bootstrapScene, () => ResetAccount(false))) { HideCards(); HideDimmer(); }
     }
     
+    // --- UPDATED: Trigger API routine instead of directly resetting the account ---
     public void OnConfirmDeactivate()
     {
         if (Busy || view != View.Deactivate || home == null) return;
-        if (home.BeginTransition(bootstrapScene, () => ResetAccount(true))) { HideCards(); HideDimmer(); }
+        StartCoroutine(UnsubscribeRoutine());
+    }
+
+    // --- MERGED: Instructor's Unsubscribe Routine ---
+    private IEnumerator UnsubscribeRoutine()
+    {
+        // Hide the confirmation popup immediately
+        HideCards(); 
+        HideDimmer();
+        view = View.Closed;
+        
+        if (config == null)
+        {
+            Debug.LogError("AppConfig is missing! Falling back to local logout.");
+            home.BeginTransition(bootstrapScene, () => ResetAccount(false, "Network Error. Logged out locally."));
+            yield break;
+        }
+
+        string refNo = PlayerPrefs.GetString("ReferenceNo", "0");
+        string jsonPayload = $"{{\"referenceNo\": \"{refNo}\"}}";
+        string endpoint = config.baseApiUrl.TrimEnd('/') + "/subscriptions/unsubscribe";
+ 
+        using (UnityWebRequest request = new UnityWebRequest(endpoint, "POST"))
+        {
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonPayload);
+            request.uploadHandler   = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("Authorization", "Bearer " + config.apiAuthToken.Trim());
+ 
+            // home.BeginTransition handles the UI loading overlay blocking automatically,
+            // but we need to wait for the web request before triggering the scene transition
+            yield return request.SendWebRequest();
+ 
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Successfully unsubscribed from backend.");
+                // Wipe local data and trigger the transition with a success message
+                home.BeginTransition(bootstrapScene, () => ResetAccount(true, "Account Deactivated."));
+            }
+            else
+            {
+                Debug.LogError("Unsubscribe failed: " + request.error + "\nResponse: " + request.downloadHandler.text);
+                // Fall back to local logout on failure
+                home.BeginTransition(bootstrapScene, () => ResetAccount(false, "Network Error. Logged out locally."));
+            }
+        }
     }
     
     // Runtime UI layers preserve the boards' original Body parent and positions.
@@ -257,15 +309,15 @@ public class SettingsManager : MonoBehaviour
         if (dimmer != null) dimmer.gameObject.SetActive(false);
     }
     
-    private static void ResetAccount(bool deactivate)
+    // --- UPDATED: Added an optional custom message parameter for backend response integration ---
+    private static void ResetAccount(bool deactivate, string authMessage = "Successfully Logged Out. Progress saved.")
     {
-        // Both confirmation buttons now sign out only. Per-user progress stays saved.
         PlayerPrefs.SetInt("Auth_LoggedOut", 1);
         foreach (string key in new[] { "AccessToken", "UserId", "Username", "Mobile", "SubscriberId", "ReferenceNo" })
             PlayerPrefs.DeleteKey(key);
         PlayerPrefs.SetInt("IsRegisteredUser", 0);
         PlayerPrefs.SetInt("IsLoggedOut", 1);
-        PlayerPrefs.SetString("AuthMessage", "Successfully Logged Out. Progress saved.");
+        PlayerPrefs.SetString("AuthMessage", authMessage);
         PlayerPrefs.Save();
         Debug.Log(deactivate
             ? "[Auth] Deactivate button: signed out; saved progress preserved."
